@@ -3,6 +3,21 @@
 Crewspace is a multi-tenant membership SaaS (working name, can be renamed).
 Read this file fully before every task. Also read the relevant file in /docs before changing code.
 
+## Session handoff (mandatory)
+Two Claude Code sessions from different accounts work on this repo. Either can stop suddenly when usage runs out, so never keep progress only in your head.
+
+At the START of every session:
+- Read docs/handoff.md, then run: git status, git log --oneline -10, git diff
+- If there are uncommitted changes, compare them with handoff.md before doing anything. Tell me what you found and what you plan to continue.
+
+DURING work:
+- After every completed step (not only at the end), update docs/handoff.md.
+- Commit working progress often. If a task is half done but the code compiles, commit with a "wip:" prefix.
+- Any new decision goes into the right doc (decisions.md, database.md, etc.) immediately, not only into handoff.md.
+
+When I say "wrap up":
+- Stop coding, update handoff.md fully, commit everything that compiles, and tell me the next exact step.
+
 ## Source of truth
 - docs/requirements.md - what we are building and what is OUT OF SCOPE
 - docs/architecture.md - stack, folder structure, patterns
