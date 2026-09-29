@@ -6,7 +6,7 @@ Target: about 10 working days.
 Every day that adds or changes a table writes that table's pgTAP tests the same day, not deferred to Day 9. Day 9 is for Playwright E2E and the security review, not for RLS coverage that should already exist.
 
 ## Day 0 - Setup
-- [ ] Create Next.js 15 app (TypeScript, Tailwind, ESLint, src dir, App Router)
+- [x] Create Next.js 15 app (TypeScript, Tailwind, ESLint, src dir, App Router)
 - [ ] Add Prettier, strict tsconfig, scripts: dev, build, lint, typecheck, test, test:db, test:e2e
 - [ ] Install shadcn/ui base components (button, input, card, dialog, dropdown, toast)
 - [ ] Supabase CLI init, `supabase start` works locally
