@@ -7,7 +7,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 
 ## Day 0 - Setup
 - [x] Create Next.js 15 app (TypeScript, Tailwind, ESLint, src dir, App Router)
-- [ ] Add Prettier, strict tsconfig, scripts: dev, build, lint, typecheck, test, test:db, test:e2e
+- [x] Add Prettier, strict tsconfig, scripts: dev, build, lint, typecheck, test, test:db, test:e2e
 - [ ] Install shadcn/ui base components (button, input, card, dialog, dropdown, toast)
 - [ ] Supabase CLI init, `supabase start` works locally
 - [ ] `lib/env.ts` with Zod validation, `.env.example`
