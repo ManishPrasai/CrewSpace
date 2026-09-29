@@ -1,17 +1,18 @@
 # Handoff
 ## Last updated
-2026-09-29, 15:20, vscode
+2026-09-29, 15:35, vscode
 ## Current task
-- [ ] Install shadcn/ui base components (button, input, card, dialog, dropdown, toast)
+- [ ] Supabase CLI init, `supabase start` works locally
 ## Status
 not started
 ## Done so far in this task
 - Task 1 (Next.js scaffold) done and committed (4b1c4d9).
 - Task 2 (prettier, strict tsconfig, scripts) done and committed (4b49a9e). typecheck/lint/test all green.
+- Task 3 (shadcn/ui components) done and committed (93a05ab). typecheck/lint/build all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Task 3: `npx shadcn@4.21.0 init` then `npx shadcn@4.21.0 add button input card dialog dropdown-menu toast` (shadcn's actual names are dropdown-menu and toast, not "dropdown"/bare "toast" — already confirmed toast is not deprecated, no Sonner swap needed). Then `npm run build` to confirm it still compiles.
+Task 4: `npm install --save-dev supabase@2.118.0`, then `npx supabase init`, then `npx supabase start` (Docker Desktop confirmed installed and running — first run will pull Docker images, can take several minutes). After it's up, show the user the local API URL/anon key/service_role key from `supabase status` so they can paste into .env.local themselves — do not write .env.local.
 ## Decisions made this session
 - Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
 - Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
