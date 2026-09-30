@@ -1,0 +1,10 @@
+export type ErrorCode =
+  | "UNAUTHENTICATED"
+  | "FORBIDDEN"
+  | "NOT_FOUND"
+  | "VALIDATION"
+  | "CONFLICT"
+  | "SEAT_LIMIT"
+  | "INVITE_INVALID"
+  | "RATE_LIMITED"
+  | "INTERNAL";
