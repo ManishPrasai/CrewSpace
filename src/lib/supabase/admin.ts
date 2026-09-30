@@ -1,0 +1,18 @@
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { clientEnv, serverEnv } from "@/lib/env";
+
+// RESTRICTED (see CLAUDE.md): only import this in the Stripe webhook
+// handler, push sender, and invitation email flow. This client uses the
+// service role key and bypasses RLS entirely.
+export function createAdminClient() {
+  return createSupabaseClient(
+    clientEnv.NEXT_PUBLIC_SUPABASE_URL,
+    serverEnv.SUPABASE_SERVICE_ROLE_KEY,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    },
+  );
+}
