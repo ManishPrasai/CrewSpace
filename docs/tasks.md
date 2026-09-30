@@ -13,8 +13,8 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] `lib/env.ts` with Zod validation, `.env.example`
 - [x] `lib/result.ts`, `lib/errors.ts`
 - [x] Supabase clients: server, browser, admin, middleware session refresh
-- [ ] GitHub Actions CI: typecheck, lint, unit tests, build
-- [ ] Commit: `chore: project setup`
+- [x] GitHub Actions CI: typecheck, lint, unit tests, build
+- [x] Commit: `chore: project setup`
 
 ## Day 1 - Auth
 - [ ] Migration: profiles table + trigger on auth.users + RLS

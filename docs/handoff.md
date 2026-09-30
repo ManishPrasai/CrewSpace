@@ -1,17 +1,39 @@
 # Handoff
 ## Last updated
-2026-09-30, 02:45, vscode
+2026-09-30, 02:52, vscode
 ## Current task
-- [ ] GitHub Actions CI: typecheck, lint, unit tests, build
+Day 0 is complete. Next task per docs/tasks.md is Day 1's first line:
+- [ ] Migration: profiles table + trigger on auth.users + RLS
 ## Status
-not started
+done (Day 0). Day 1 not started.
 ## Done so far in this task
-- Tasks 1-6 done (see git log 4b1c4d9..1dedf2c). All typecheck/lint/test/build green throughout.
-- Task 7 (Supabase clients) done and committed (d015cbb). server.ts/client.ts/admin.ts/middleware.ts + root src/middleware.ts, all reading config from lib/env.ts. admin.ts has no caller yet (correctly, per CLAUDE.md restriction — no webhook/push/invite flow exists until later days). No dedicated test (thin wrappers, no branching); verified via typecheck/lint/build, middleware confirmed compiling into its own 190kB bundle.
+All 9 Day 0 boxes in docs/tasks.md are ticked and committed, one commit per task, working tree clean at every step:
+- 4b1c4d9 chore: scaffold Next.js app
+- 4b49a9e chore: add prettier, strict tsconfig, npm scripts
+- 93a05ab feat: add shadcn/ui base components
+- 7097f27 chore: init Supabase CLI and local stack
+- c78d1a5 feat: add env validation
+- 1dedf2c feat: add result and error helpers
+- d015cbb feat: add Supabase client helpers
+- 4e36062 chore: project setup (CI workflow)
+typecheck/lint/test/build all green as of the last commit.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Task 8, the last Day 0 task: create `.github/workflows/ci.yml` — checkout, setup-node pinned to Node 24 (matches local runtime), `npm ci`, then typecheck/lint/test/build. Deliberately NOT running test:db or test:e2e in CI (no Docker/Supabase/browsers available in the runner yet, and tasks.md's own CI line only asks for typecheck/lint/unit/build). This commit's message should be exactly "chore: project setup" per tasks.md's final Day 0 line. After this commit, tick tasks.md's last two boxes (CI line + the "Commit: chore: project setup" line itself), update handoff.md, and STOP — do not start Day 1. No GitHub remote exists yet; the user said they'll create a private repo and hand over the URL later, so do not push.
+Per CLAUDE.md workflow rules, STOP here — do not start Day 1 without the user's go-ahead. When told to proceed: read docs/tasks.md Day 1, docs/database.md (profiles table + RLS + shares_workspace_with helper already spec'd from the earlier review), and docs/api.md's Auth section, then plan the profiles migration + trigger + RLS + its pgTAP tests (per the "same day" testing rule) before writing any SQL.
+## Decisions made this session
+- Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
+- Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
+- `npm audit` reports 2 vulnerabilities (1 high) in `next/node_modules/postcss` (XSS/path traversal in CSS sourcemap handling). The only fix is upgrading to Next 16.3.7, which the user explicitly declined. Accepted as a known tradeoff of the version pin — not fixed.
+- Checked shadcn's toast component against live docs: not deprecated, no Sonner substitution needed.
+- typescript pinned to 5.9.3 (typescript-eslint@8.70.1 doesn't support TS7 yet). @types/node bumped to 24.19.0 to match the local Node 24 runtime and satisfy vitest 5's peer dependency.
+- `supabase start`'s parallel image pulls hit persistent TLS handshake timeouts on this network. Fixed by pulling the missing images one at a time with plain `docker pull` (lower connection concurrency), then `supabase start` completed instantly against the fully-cached set. If this recurs on a fresh machine, that's the fix.
+- `supabase_vector_CrewSpace` crash-loops with a Docker-Desktop-on-Windows socket-access quirk — only disables Studio's Logs Explorer tab, core services (Postgres/Auth/REST/Storage/Realtime/Kong) are all independently verified healthy. Left as-is.
+- lib/errors.ts holds just the ErrorCode union; lib/result.ts holds ActionResult<T> + ok()/err(). Deliberately did not build a Postgres-error-mapping helper — no caller exists until Day 2+ features land.
+- Supabase client helpers (server/client/admin/middleware) are thin factory wrappers with no branching logic, so no dedicated unit tests — verified via typecheck/lint/build instead. admin.ts has no caller yet, correctly, per CLAUDE.md's restriction.
+- CI workflow runs typecheck/lint/test/build only, not test:db/test:e2e (no Docker/Supabase/browsers in the runner). No GitHub remote exists yet — user will create a private repo and hand over the URL; nothing has been pushed.
+## Blockers / open questions for me
+- No GitHub remote yet. When the user provides the URL, add it as origin and push so CI actually runs (currently untested against a real Actions runner, only verified locally with the same commands).
 ## Decisions made this session
 - Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
 - Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
