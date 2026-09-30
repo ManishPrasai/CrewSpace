@@ -1,8 +1,8 @@
 # Handoff
 ## Last updated
-2026-09-30, 02:10, vscode
+2026-09-30, 02:22, vscode
 ## Current task
-- [ ] `lib/env.ts` with Zod validation, `.env.example`
+- [ ] `lib/result.ts`, `lib/errors.ts`
 ## Status
 not started
 ## Done so far in this task
@@ -10,10 +10,11 @@ not started
 - Task 2 (prettier, strict tsconfig, scripts) done and committed (4b49a9e). typecheck/lint/test all green.
 - Task 3 (shadcn/ui components) done and committed (93a05ab). typecheck/lint/build all green.
 - Task 4 (Supabase CLI + local stack) done and committed (7097f27). `supabase start` verified working: REST API returns 200, Postgres accepting connections, Studio responds. Local URL/anon/service_role keys were shown to the user directly in chat for them to paste into .env.local — not written to any file.
+- Task 5 (lib/env.ts) done and committed (c78d1a5). clientEnv/serverEnv split, serverEnv throws via Proxy if touched from client code. 3 vitest tests (valid parse, invalid client var, invalid server var) — typecheck/lint/test all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Task 5: `npm install zod@4.6.5` (prod dependency), then create `src/lib/env.ts` — a Zod schema validating every var in .env.example, split server-only vs NEXT_PUBLIC_* per docs/architecture.md. Add one small vitest smoke test. Run typecheck + test.
+Task 6: create `src/lib/result.ts` (ActionResult<T> type + ok()/err() helpers, exact shape from docs/api.md) and `src/lib/errors.ts` (the ErrorCode union + any Postgres-error-code mapping helper docs/api.md describes). Add a small vitest smoke test for the ok()/err() shape. Run typecheck + test.
 ## Decisions made this session
 - Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
 - Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
