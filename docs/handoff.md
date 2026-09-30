@@ -1,21 +1,17 @@
 # Handoff
 ## Last updated
-2026-09-30, 02:35, vscode
+2026-09-30, 02:45, vscode
 ## Current task
-- [ ] Supabase clients: server, browser, admin, middleware session refresh
+- [ ] GitHub Actions CI: typecheck, lint, unit tests, build
 ## Status
 not started
 ## Done so far in this task
-- Task 1 (Next.js scaffold) done and committed (4b1c4d9).
-- Task 2 (prettier, strict tsconfig, scripts) done and committed (4b49a9e). typecheck/lint/test all green.
-- Task 3 (shadcn/ui components) done and committed (93a05ab). typecheck/lint/build all green.
-- Task 4 (Supabase CLI + local stack) done and committed (7097f27). `supabase start` verified working: REST API returns 200, Postgres accepting connections, Studio responds. Local URL/anon/service_role keys were shown to the user directly in chat for them to paste into .env.local — not written to any file.
-- Task 5 (lib/env.ts) done and committed (c78d1a5). clientEnv/serverEnv split, serverEnv throws via Proxy if touched from client code. 3 vitest tests (valid parse, invalid client var, invalid server var) — typecheck/lint/test all green.
-- Task 6 (lib/result.ts, lib/errors.ts) done and committed (1dedf2c). ErrorCode union in errors.ts, ActionResult<T> + ok()/err() in result.ts, matching docs/api.md exactly. Deliberately did not build a Postgres-error-mapping helper yet — no caller exists until Day 2+ features land, so it would be speculative. 4 vitest tests, typecheck/lint/test all green.
+- Tasks 1-6 done (see git log 4b1c4d9..1dedf2c). All typecheck/lint/test/build green throughout.
+- Task 7 (Supabase clients) done and committed (d015cbb). server.ts/client.ts/admin.ts/middleware.ts + root src/middleware.ts, all reading config from lib/env.ts. admin.ts has no caller yet (correctly, per CLAUDE.md restriction — no webhook/push/invite flow exists until later days). No dedicated test (thin wrappers, no branching); verified via typecheck/lint/build, middleware confirmed compiling into its own 190kB bundle.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Task 7 (last Day 0 code task before CI): `npm install @supabase/supabase-js@2.117.2 @supabase/ssr@0.12.7`, then create `src/lib/supabase/{server,client,admin,middleware}.ts` and `src/middleware.ts` per docs/architecture.md's folder structure. These are thin factory wrappers with no branching logic — no dedicated test needed (nothing to assert beyond "it returns a client"). Verify with `npm run build` since middleware compiles into the Next build. Remember: admin.ts is service-role only, CLAUDE.md says never import it outside the Stripe webhook / push sender / invitation email flow, none of which exist yet — just define the factory, don't wire up a caller.
+Task 8, the last Day 0 task: create `.github/workflows/ci.yml` — checkout, setup-node pinned to Node 24 (matches local runtime), `npm ci`, then typecheck/lint/test/build. Deliberately NOT running test:db or test:e2e in CI (no Docker/Supabase/browsers available in the runner yet, and tasks.md's own CI line only asks for typecheck/lint/unit/build). This commit's message should be exactly "chore: project setup" per tasks.md's final Day 0 line. After this commit, tick tasks.md's last two boxes (CI line + the "Commit: chore: project setup" line itself), update handoff.md, and STOP — do not start Day 1. No GitHub remote exists yet; the user said they'll create a private repo and hand over the URL later, so do not push.
 ## Decisions made this session
 - Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
 - Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
