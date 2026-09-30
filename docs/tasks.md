@@ -11,7 +11,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] Install shadcn/ui base components (button, input, card, dialog, dropdown, toast)
 - [x] Supabase CLI init, `supabase start` works locally
 - [x] `lib/env.ts` with Zod validation, `.env.example`
-- [ ] `lib/result.ts`, `lib/errors.ts`
+- [x] `lib/result.ts`, `lib/errors.ts`
 - [ ] Supabase clients: server, browser, admin, middleware session refresh
 - [ ] GitHub Actions CI: typecheck, lint, unit tests, build
 - [ ] Commit: `chore: project setup`

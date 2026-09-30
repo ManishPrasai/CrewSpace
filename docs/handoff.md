@@ -1,8 +1,8 @@
 # Handoff
 ## Last updated
-2026-09-30, 02:22, vscode
+2026-09-30, 02:35, vscode
 ## Current task
-- [ ] `lib/result.ts`, `lib/errors.ts`
+- [ ] Supabase clients: server, browser, admin, middleware session refresh
 ## Status
 not started
 ## Done so far in this task
@@ -11,10 +11,11 @@ not started
 - Task 3 (shadcn/ui components) done and committed (93a05ab). typecheck/lint/build all green.
 - Task 4 (Supabase CLI + local stack) done and committed (7097f27). `supabase start` verified working: REST API returns 200, Postgres accepting connections, Studio responds. Local URL/anon/service_role keys were shown to the user directly in chat for them to paste into .env.local — not written to any file.
 - Task 5 (lib/env.ts) done and committed (c78d1a5). clientEnv/serverEnv split, serverEnv throws via Proxy if touched from client code. 3 vitest tests (valid parse, invalid client var, invalid server var) — typecheck/lint/test all green.
+- Task 6 (lib/result.ts, lib/errors.ts) done and committed (1dedf2c). ErrorCode union in errors.ts, ActionResult<T> + ok()/err() in result.ts, matching docs/api.md exactly. Deliberately did not build a Postgres-error-mapping helper yet — no caller exists until Day 2+ features land, so it would be speculative. 4 vitest tests, typecheck/lint/test all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Task 6: create `src/lib/result.ts` (ActionResult<T> type + ok()/err() helpers, exact shape from docs/api.md) and `src/lib/errors.ts` (the ErrorCode union + any Postgres-error-code mapping helper docs/api.md describes). Add a small vitest smoke test for the ok()/err() shape. Run typecheck + test.
+Task 7 (last Day 0 code task before CI): `npm install @supabase/supabase-js@2.117.2 @supabase/ssr@0.12.7`, then create `src/lib/supabase/{server,client,admin,middleware}.ts` and `src/middleware.ts` per docs/architecture.md's folder structure. These are thin factory wrappers with no branching logic — no dedicated test needed (nothing to assert beyond "it returns a client"). Verify with `npm run build` since middleware compiles into the Next build. Remember: admin.ts is service-role only, CLAUDE.md says never import it outside the Stripe webhook / push sender / invitation email flow, none of which exist yet — just define the factory, don't wire up a caller.
 ## Decisions made this session
 - Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
 - Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
