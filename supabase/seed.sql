@@ -39,5 +39,8 @@ end;
 $$;
 
 -- These simulate auth for pgTAP only. Never let real client roles call them.
-revoke execute on function tests.create_supabase_user(text) from anon, authenticated;
-revoke execute on function tests.authenticate_as(uuid) from anon, authenticated;
+-- Functions grant EXECUTE to PUBLIC by default, and anon/authenticated
+-- inherit from PUBLIC, so revoking from just those two roles leaves the
+-- PUBLIC grant in place. Revoke from PUBLIC explicitly.
+revoke execute on function tests.create_supabase_user(text) from public;
+revoke execute on function tests.authenticate_as(uuid) from public;
