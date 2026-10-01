@@ -18,10 +18,10 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 
 ## Day 1 - Auth
 - [x] Migration: profiles table + trigger on auth.users + RLS
-- [ ] Sign up, login, logout, password reset pages and actions
+- [x] Sign up, login, logout, password reset pages and actions
 - [ ] `/auth/callback` route with safe `next` redirect
 - [ ] Middleware protects (app) routes
-- [ ] Tests: Zod schemas, safe redirect helper
+- [x] Tests: Zod schemas, safe redirect helper
 - [x] pgTAP: profiles - self can select/update own row, cannot select an unrelated user's profile
 
 ## Day 2 - Workspaces
