@@ -30,7 +30,7 @@ Modular monolith in a single Next.js app. No microservices, no separate backend 
 src/
   app/
     (marketing)/page.tsx            landing page
-    (auth)/login, signup, reset-password, auth/callback
+    (auth)/login, signup, reset-password, reset-password/update, auth/callback
     (app)/
       workspaces/page.tsx           workspace list + create
       w/[slug]/
@@ -83,6 +83,12 @@ These run as security definer RPC functions with explicit checks:
 - `accept_invitation(token)` - validate + lock workspace row + check plan limit + insert membership
 - `change_member_role(ws_id, user_id, role)`
 - `remove_member(ws_id, user_id)` / `leave_workspace(ws_id)`
+
+### Password reset flow
+Two separate routes, not one route that branches on session state (any logged-in user has a session, so that can't be used to distinguish the steps):
+1. `/reset-password` - request form (email only). `requestPasswordReset` always returns `ok`, win or lose, and calls `resetPasswordForEmail(email, { redirectTo: `${APP_URL}/auth/callback?next=/reset-password/update` })`.
+2. Email link (via Mailpit locally) hits `/auth/callback`, which exchanges the code for a recovery session and redirects to `next`.
+3. `/reset-password/update` - new password form. `updatePassword` requires that recovery session; the page itself doesn't check for one, the action just fails naturally if there isn't a valid session.
 
 ### Billing flow
 1. Owner clicks Upgrade > server action creates Stripe Checkout Session with `client_reference_id = workspace_id` and metadata.
