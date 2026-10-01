@@ -33,7 +33,7 @@ Per CLAUDE.md workflow rules, STOP here — do not start Day 1 without the user'
 - Supabase client helpers (server/client/admin/middleware) are thin factory wrappers with no branching logic, so no dedicated unit tests — verified via typecheck/lint/build instead. admin.ts has no caller yet, correctly, per CLAUDE.md's restriction.
 - CI workflow runs typecheck/lint/test/build only, not test:db/test:e2e (no Docker/Supabase/browsers in the runner). No GitHub remote exists yet — user will create a private repo and hand over the URL; nothing has been pushed.
 ## Blockers / open questions for me
-- No GitHub remote yet. When the user provides the URL, add it as origin and push so CI actually runs (currently untested against a real Actions runner, only verified locally with the same commands).
+- None. origin (https://github.com/ManishPrasai/CrewSpace.git) added and main pushed (43ffcac). CI has not yet been confirmed on a real Actions runner — gh CLI isn't installed locally and the repo is private, so ask the user to check the Actions tab.
 ## Decisions made this session
 - Scaffolded via a temp dir (scratchpad) + manual move, specifically so create-next-app never wrote into the repo root directly — protects CLAUDE.md, docs/, .env.example. New .gitignore lines were merged into the existing file by hand instead of letting the scaffold overwrite it.
 - Stayed on Next.js 15.5.26 (latest 15.x) per CLAUDE.md's stack lock, even though 16.3.6 is the latest overall — confirmed with the user, not deviating.
