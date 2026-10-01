@@ -6,7 +6,7 @@
 ## Status
 not started
 ## Done so far in this task
-Day 0 fully complete (all 9 boxes). Day 1's first two boxes done and committed (9dad5f3): profiles migration (table + RLS self-only policies + column-level grants restricting update to full_name/avatar_url + sanitising security-definer trigger) and its pgTAP tests (7 assertions, all passing). supabase/seed.sql added with pgTAP auth-simulation helpers in a `tests` schema, confirmed excluded from exposed API schemas and EXECUTE-revoked from anon/authenticated. typecheck/lint/test/test:db all green.
+Day 0 fully complete (all 9 boxes). Day 1's first two boxes done and committed (9dad5f3, dde3ce3): profiles migration (table + RLS self-only policies + column-level grants restricting update to full_name/avatar_url + sanitising security-definer trigger) and its pgTAP tests (11 assertions across 2 files, all passing). supabase/seed.sql has pgTAP auth-simulation helpers in a `tests` schema, excluded from exposed API schemas, EXECUTE revoked from PUBLIC (not just anon/authenticated - see decisions below). typecheck/lint/test/test:db all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
@@ -22,6 +22,7 @@ Day 1, task 2: Sign up, login, logout, password reset pages and actions, per doc
 - lib/errors.ts holds just the ErrorCode union; lib/result.ts holds ActionResult<T> + ok()/err(). Deliberately did not build a Postgres-error-mapping helper — no caller exists until Day 2+ features land.
 - Day 1 profiles RLS deliberately scoped to self-only (select/update); the shares_workspace_with helper and co-member SELECT policy are deferred to Day 2 since workspace_members doesn't exist yet. Per the user's confirmation, Day 2 will add this as a second, separate permissive SELECT policy rather than editing Day 1's policy — Postgres ORs multiple permissive policies together, so this keeps every migration purely additive.
 - tests.authenticate_as() / the role-switching test helper cannot be security definer — Postgres disallows SET ROLE inside a security-definer function body. Only tests.create_supabase_user() (which writes to auth.users) needs security definer.
+- Functions grant EXECUTE to PUBLIC by default; anon/authenticated inherit from PUBLIC. Revoking from anon/authenticated specifically left the PUBLIC grant in place, so they still had EXECUTE in practice - fixed by revoking from PUBLIC directly. Added pgTAP assertions using has_schema_privilege()/has_function_privilege() (checks actual effective privilege, not pgTAP's own wrapper functions, since pgTAP loads ephemerally during supabase test db and isn't introspectable ahead of a run).
 - CI workflow runs typecheck/lint/test/build only, not test:db/test:e2e (no Docker/Supabase/browsers in the runner).
 ## Blockers / open questions for me
 - None. origin (https://github.com/ManishPrasai/CrewSpace.git) is set and main was force-pushed by the user after the history rewrite — confirmed via git fetch that origin/main matches local main. CI status on a real Actions runner has not yet been confirmed by the user.
