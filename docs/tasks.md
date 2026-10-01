@@ -17,12 +17,12 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] Commit: `chore: project setup`
 
 ## Day 1 - Auth
-- [ ] Migration: profiles table + trigger on auth.users + RLS
+- [x] Migration: profiles table + trigger on auth.users + RLS
 - [ ] Sign up, login, logout, password reset pages and actions
 - [ ] `/auth/callback` route with safe `next` redirect
 - [ ] Middleware protects (app) routes
 - [ ] Tests: Zod schemas, safe redirect helper
-- [ ] pgTAP: profiles - self can select/update own row, cannot select an unrelated user's profile
+- [x] pgTAP: profiles - self can select/update own row, cannot select an unrelated user's profile
 
 ## Day 2 - Workspaces
 - [ ] Migration: enums, workspaces, workspace_members, helper functions, RLS, column grants
