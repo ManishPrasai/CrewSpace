@@ -34,7 +34,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 
 ## Day 3 - Members and roles
 - [x] RPCs: change_member_role, remove_member, leave_workspace
-- [ ] Members page with role badges and actions shown by role
+- [x] Members page with role badges and actions shown by role
 - [x] pgTAP: owner cannot be removed, admin cannot remove admin, member cannot change roles
 
 ## Day 4 - Invitations
