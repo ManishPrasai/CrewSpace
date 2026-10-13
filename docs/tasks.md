@@ -27,7 +27,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 ## Day 2 - Workspaces
 - [x] Migration: enums, workspaces, workspace_members, helper functions, RLS, column grants
 - [x] RPC `create_workspace`
-- [ ] Workspace list + create form + slug validation
+- [x] Workspace list + create form + slug validation
 - [ ] Workspace layout with switcher at `/w/[slug]` (404 if not member)
 - [ ] Rename workspace (owner/admin)
 - [x] pgTAP: cross-tenant isolation, cannot update plan from client, member can select profile of a workspace-mate but not an unrelated user

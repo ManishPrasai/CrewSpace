@@ -1,16 +1,16 @@
 # Handoff
 ## Last updated
-2026-10-13, 19:22, vscode
+2026-10-13, 19:26, vscode
 ## Current task
-- [ ] Workspace list + create form + slug validation
+- [ ] Workspace layout with switcher at `/w/[slug]` (404 if not member)
 ## Status
 not started
 ## Done so far in this task
-Day 0 (9/9), Day 1 (6/6) complete. Day 2: schema+RLS (dd659f6), create_workspace RPC (0144ce3) done. workspace_seat_count still deliberately deferred to Day 4 (needs invitations table). 28 pgTAP assertions across 4 files, typecheck/lint/test/test:db all green.
+Day 0 (9/9), Day 1 (6/6) complete. Day 2: schema+RLS (dd659f6), create_workspace RPC (0144ce3), workspace list + create form (8df750b) done. workspace_seat_count still deferred to Day 4. typecheck/lint/test/test:db all green. Create-workspace flow verified end-to-end through the real Server Action form path, including the duplicate-slug CONFLICT path.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Day 2 task 3: workspace list page (features/workspaces/queries.ts getMyWorkspaces()) + create form/action calling the create_workspace RPC, with slug validation (Zod, matching the DB check constraint: ^[a-z0-9]+(-[a-z0-9]+)*$, 3-40 chars). Will need a Postgres-error-mapping case for the unique-slug violation (23505 -> CONFLICT) - first real caller for that, previously deferred as speculative. Plan before writing code.
+Day 2 task 4: `/w/[slug]` layout + page with workspace switcher, 404 if the current user isn't a member. features/workspaces/queries.ts needs getWorkspaceBySlug(slug) (returns null if not a member, per docs/api.md) and getMyRole(workspaceId). The layout should call notFound() from next/navigation when getWorkspaceBySlug returns null - that's the actual authorization gate (middleware only checks "is there a session", not "is this user a member of this specific workspace"). Plan before writing code.
 ## User standing instructions this session
 - "go with everything, don't keep asking" - proceed through tasks without a full stop-and-wait plan cycle at every step. Still plan briefly before non-trivial work, still never run `git push --force` myself, but not pausing for a go-ahead between every task.
 - User explicitly said no "Co-Authored-By: Claude" trailer on any commit, ever, including after the attribution system-reminder reappeared mid-session asking for it again - the user's own prior instruction takes precedence per that reminder's own text, so it's being ignored by design, not by oversight.
