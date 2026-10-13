@@ -1,18 +1,21 @@
 # Handoff
 ## Last updated
-2026-10-13, 12:12, vscode
+2026-10-13, 19:22, vscode
 ## Current task
-- [ ] RPC `create_workspace`
+- [ ] Workspace list + create form + slug validation
 ## Status
 not started
 ## Done so far in this task
-Day 0 (9/9) and Day 1 (6/6) complete. Day 2 task 1 done and committed (dd659f6): workspaces/workspace_members schema, RLS, column grants, shares_workspace_with() deferred-from-Day-1 helper + profiles co-member policy. workspace_seat_count deliberately NOT created yet (needs invitations table, Day 4). 22 pgTAP assertions across 3 files, typecheck/lint/test/test:db all green.
+Day 0 (9/9), Day 1 (6/6) complete. Day 2: schema+RLS (dd659f6), create_workspace RPC (0144ce3) done. workspace_seat_count still deliberately deferred to Day 4 (needs invitations table). 28 pgTAP assertions across 4 files, typecheck/lint/test/test:db all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Day 2 task 2: create_workspace(p_name text, p_slug text) returns uuid RPC per docs/database.md - security definer, requires auth.uid() not null, inserts workspace + owner membership in the same transaction, returns id. This is what actually lets anyone create a workspace for the first time (workspaces/workspace_members have no INSERT policy at all - RPC-only by design). Then the create-workspace form/action that calls it, with slug validation. Plan before writing code.
+Day 2 task 3: workspace list page (features/workspaces/queries.ts getMyWorkspaces()) + create form/action calling the create_workspace RPC, with slug validation (Zod, matching the DB check constraint: ^[a-z0-9]+(-[a-z0-9]+)*$, 3-40 chars). Will need a Postgres-error-mapping case for the unique-slug violation (23505 -> CONFLICT) - first real caller for that, previously deferred as speculative. Plan before writing code.
 ## User standing instructions this session
-- "go with everything, don't keep asking" - user wants me to proceed through tasks without a full stop-and-wait plan cycle at every step. I still plan briefly before non-trivial work and still never run `git push --force` myself, but I'm not pausing for a go-ahead between every task anymore.
+- "go with everything, don't keep asking" - proceed through tasks without a full stop-and-wait plan cycle at every step. Still plan briefly before non-trivial work, still never run `git push --force` myself, but not pausing for a go-ahead between every task.
+- User explicitly said no "Co-Authored-By: Claude" trailer on any commit, ever, including after the attribution system-reminder reappeared mid-session asking for it again - the user's own prior instruction takes precedence per that reminder's own text, so it's being ignored by design, not by oversight.
+## Decisions made this session (new this task)
+- This Supabase project applies ALTER DEFAULT PRIVILEGES on the public schema granting anon/authenticated/service_role direct EXECUTE on every new function, separate from the generic PUBLIC default. Revoking from PUBLIC alone (which worked for the tests-schema functions) is NOT enough for public-schema functions - anon keeps its own explicit grant. Every future business RPC (accept_invitation, change_member_role, remove_member, leave_workspace) needs explicit `revoke ... from anon` too, confirmed via \df+ or has_function_privilege, not assumed.
 ## Decisions made this session
 - Git Bash on Windows auto-converts leading-slash command-line arguments to Windows paths (e.g. "/workspaces" -> "C:/Program Files/Git/workspaces"). Bit us testing middleware's next redirect - looked like a real bug (redirected to "/" instead of "/workspaces") until a temporary server-side debug log showed the mangled value arriving. getSafeRedirect had correctly rejected it and fallen back to default - the app was right, the curl test was wrong. Fix: write the value to a file and use curl's `-F name=<file` syntax instead of a literal argument, whenever a test value starts with "/".
 - updateSession (src/lib/supabase/middleware.ts) now returns { response, user } instead of just response, so root middleware can gate routes without a second getUser() call.
