@@ -20,7 +20,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] Migration: profiles table + trigger on auth.users + RLS
 - [x] Sign up, login, logout, password reset pages and actions
 - [x] `/auth/callback` route with safe `next` redirect
-- [ ] Middleware protects (app) routes
+- [x] Middleware protects (app) routes
 - [x] Tests: Zod schemas, safe redirect helper
 - [x] pgTAP: profiles - self can select/update own row, cannot select an unrelated user's profile
 
