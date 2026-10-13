@@ -1,16 +1,16 @@
 # Handoff
 ## Last updated
-2026-10-13, 19:26, vscode
+2026-10-13, 19:31, vscode
 ## Current task
-- [ ] Workspace layout with switcher at `/w/[slug]` (404 if not member)
+- [ ] Rename workspace (owner/admin)
 ## Status
 not started
 ## Done so far in this task
-Day 0 (9/9), Day 1 (6/6) complete. Day 2: schema+RLS (dd659f6), create_workspace RPC (0144ce3), workspace list + create form (8df750b) done. workspace_seat_count still deferred to Day 4. typecheck/lint/test/test:db all green. Create-workspace flow verified end-to-end through the real Server Action form path, including the duplicate-slug CONFLICT path.
+Day 0 (9/9), Day 1 (6/6) complete. Day 2: schema+RLS (dd659f6), create_workspace RPC (0144ce3), workspace list + create form (8df750b), /w/[slug] layout + switcher + 404 gate (6fda4cb) all done. workspace_seat_count still deferred to Day 4. typecheck/lint/test/test:db all green. Verified end-to-end: owner sees their workspace, a second unrelated authenticated user hitting the same /w/[slug] gets a real 404 not a leak.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Day 2 task 4: `/w/[slug]` layout + page with workspace switcher, 404 if the current user isn't a member. features/workspaces/queries.ts needs getWorkspaceBySlug(slug) (returns null if not a member, per docs/api.md) and getMyRole(workspaceId). The layout should call notFound() from next/navigation when getWorkspaceBySlug returns null - that's the actual authorization gate (middleware only checks "is there a session", not "is this user a member of this specific workspace"). Plan before writing code.
+Day 2's last task: rename workspace action, owner/admin only. The RLS policy and column grant (update name only) already exist from the schema migration - this task is the actual renameWorkspace server action (features/workspaces/actions.ts) + a small form/UI on the /w/[slug] page or settings area, per docs/api.md's renameWorkspace(workspaceId, name) -> void. No new RPC needed - a plain UPDATE through the user-scoped client is enough since RLS+grants already enforce owner/admin-only, name-only. After this, Day 2 is fully complete (all 6 boxes) and Day 3 (Members and roles) starts.
 ## User standing instructions this session
 - "go with everything, don't keep asking" - proceed through tasks without a full stop-and-wait plan cycle at every step. Still plan briefly before non-trivial work, still never run `git push --force` myself, but not pausing for a go-ahead between every task.
 - User explicitly said no "Co-Authored-By: Claude" trailer on any commit, ever, including after the attribution system-reminder reappeared mid-session asking for it again - the user's own prior instruction takes precedence per that reminder's own text, so it's being ignored by design, not by oversight.
