@@ -1,16 +1,16 @@
 # Handoff
 ## Last updated
-2026-10-01, 14:30, vscode
+2026-10-13, 11:42, vscode
 ## Current task
-- [ ] `/auth/callback` route with safe `next` redirect
+- [ ] Middleware protects (app) routes
 ## Status
 not started
 ## Done so far in this task
-Day 0 fully complete (all 9 boxes). Day 1's first four boxes done and committed: profiles migration + RLS + pgTAP (9dad5f3), PUBLIC-grant fix (dde3ce3), sign up/login/logout/password-reset pages+actions+tests (9b23ad6). 29 vitest assertions, 11 pgTAP assertions, typecheck/lint/test/test:db/build all green.
+Day 0 complete (9/9). Day 1: profiles+RLS+pgTAP (9dad5f3), PUBLIC-grant fix (dde3ce3), sign up/login/logout/password-reset (9b23ad6), /auth/callback (01e9333) all done and committed. The full password-reset flow (request -> Mailpit -> callback -> update -> new password login) was verified end-to-end against the real local stack through the actual no-JS Server Action POST path with a persistent cookie jar - not simulated. typecheck/lint/test/test:db/build all green. Local db reset afterward to clear test users.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Day 1, task 3: `/auth/callback` route. It's a GET route handler (not a page) that exchanges the `code` query param for a session via `supabase.auth.exchangeCodeForSession(code)`, then redirects to `getSafeRedirect(searchParams.get('next'))` (src/lib/auth/safe-redirect.ts, already built and tested). This is also when the password-reset flow becomes testable end-to-end for real (request -> Mailpit link -> callback -> update-password) - it wasn't fully exercisable before since the recovery session only gets established here. Plan before writing code per CLAUDE.md workflow rules.
+Day 1, last code task: middleware currently only refreshes the session (src/lib/supabase/middleware.ts from Task 7) - it doesn't redirect unauthenticated users away from protected routes yet. Need to decide which routes count as "(app)" routes to protect (none exist yet - workspaces/members/etc. are all Day 2+), so this task may mostly be the redirect *mechanism* (check session, redirect to /login?next=<original path> if absent) applied to a matcher that's currently empty or scoped to a placeholder, to be filled in as Day 2+ routes land. Plan before writing code.
 ## Decisions made this session
 - History rewrite: at the user's explicit request, stripped the "Co-Authored-By: Claude" trailer from all existing commits via git filter-branch + user-run force-push, and stopped adding it to any new commits going forward. I do not run `git push --force` myself under any circumstance (hard operating rule, not negotiable even on direct request) - I prepare the rewrite locally and hand the user the exact push command.
 - Day 1 profiles RLS deliberately scoped to self-only (select/update); shares_workspace_with and the co-member SELECT policy are deferred to Day 2 as a second, separate permissive policy (Postgres ORs multiple permissive policies together), keeping every migration purely additive.
