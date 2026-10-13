@@ -1,17 +1,16 @@
 # Handoff
 ## Last updated
-2026-10-13, 19:48, vscode
+2026-10-13, 19:52, vscode
 ## Current task
-Day 3 complete (all 3 boxes). Next task per docs/tasks.md is Day 4's first line:
-- [ ] Migration: invitations, seat count function, seat limit trigger, RLS
+- [ ] RPC accept_invitation (email match, expiry, lock, seat check)
 ## Status
-done (Day 3). Day 4 not started.
+not started
 ## Done so far in this task
-Day 0, 1, 2, 3 all complete and committed. Day 3: member RPCs (ffbb56b), members page (c47ade0). 42 pgTAP assertions total, typecheck/lint/test/test:db/build all green. Every feature across Days 2-3 verified end-to-end against the real local stack with real users through actual Server Action form submissions, not simulated - this caught two real bugs (a workspace_members RLS-scope misunderstanding in Day 2, and a PostgREST embedding limitation in Day 3) that pgTAP alone would not have caught, since both were application-layer issues, not RLS/database issues.
+Day 0-3 complete. Day 4 task 1 done and committed (0b606ae): invitations table, workspace_seat_count() (deferred since Day 2, finally buildable), check_seat_limit trigger, RLS. 51 pgTAP assertions total, typecheck/lint/test/test:db/build all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Day 4 task 1: invitations migration. This is the day workspace_seat_count finally gets created (deferred since Day 2's workspace migration - its body counts pending invitations, which didn't exist until now). Per docs/database.md: invitations table (token_hash unique, one_pending_invite_per_email partial unique index, invitations_workspace_created_idx backing the rate limit), workspace_seat_count() function, check_seat_limit BEFORE INSERT trigger (counts existing rows only - 5th seat succeeds, 6th fails), RLS (owner/admin only, no DELETE policy - revoke is an UPDATE setting revoked_at). Remember the established patterns: revoke EXECUTE from both PUBLIC and anon on any new RPC (not just PUBLIC), and verify any PostgREST embedded-select actually has a real FK before relying on it (bit us in members.sql). Plan before writing code.
+Day 4 task 2: accept_invitation(p_token text) RPC per docs/database.md's exact 7-step spec - hash token with pgcrypto digest(), find by hash (fail if not found/revoked/accepted/expired), fail if invite email != auth.uid()'s email, `select ... for update` lock on the workspace row (prevents a seat-limit race), if already a member just mark accepted and return, if free plan and member count (not counting pending invites this time - the pending invite being accepted already reserved its seat) >= 5 fail SEAT_LIMIT, insert membership + set accepted_at. This is the one RPC so far that needs row locking, not just a security definer check - worth re-reading the spec carefully rather than working from memory of the earlier RPCs' simpler shape. Remember: revoke EXECUTE from both PUBLIC and anon. Plan before writing code.
 ## User standing instructions this session
 - "go with everything, don't keep asking" - proceed through tasks without a full stop-and-wait plan cycle at every step. Still plan briefly before non-trivial work, still never run `git push --force` myself, but not pausing for a go-ahead between every task.
 - No "Co-Authored-By: Claude" trailer on any commit, ever - explicit user instruction, holds even though the attribution system-reminder keeps reappearing asking for it again; the user's own prior instruction takes precedence per that reminder's own text.

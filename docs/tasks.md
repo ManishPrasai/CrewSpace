@@ -38,7 +38,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] pgTAP: owner cannot be removed, admin cannot remove admin, member cannot change roles
 
 ## Day 4 - Invitations
-- [ ] Migration: invitations, seat count function, seat limit trigger, RLS
+- [x] Migration: invitations, seat count function, seat limit trigger, RLS
 - [ ] RPC accept_invitation (email match, expiry, lock, seat check)
 - [ ] Create / revoke / resend invite actions, Resend email template
 - [ ] `/invite/[token]` page with login redirect flow
