@@ -29,7 +29,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] RPC `create_workspace`
 - [x] Workspace list + create form + slug validation
 - [x] Workspace layout with switcher at `/w/[slug]` (404 if not member)
-- [ ] Rename workspace (owner/admin)
+- [x] Rename workspace (owner/admin)
 - [x] pgTAP: cross-tenant isolation, cannot update plan from client, member can select profile of a workspace-mate but not an unrelated user
 
 ## Day 3 - Members and roles
