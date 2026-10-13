@@ -25,12 +25,12 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] pgTAP: profiles - self can select/update own row, cannot select an unrelated user's profile
 
 ## Day 2 - Workspaces
-- [ ] Migration: enums, workspaces, workspace_members, helper functions, RLS, column grants
+- [x] Migration: enums, workspaces, workspace_members, helper functions, RLS, column grants
 - [ ] RPC `create_workspace`
 - [ ] Workspace list + create form + slug validation
 - [ ] Workspace layout with switcher at `/w/[slug]` (404 if not member)
 - [ ] Rename workspace (owner/admin)
-- [ ] pgTAP: cross-tenant isolation, cannot update plan from client, member can select profile of a workspace-mate but not an unrelated user
+- [x] pgTAP: cross-tenant isolation, cannot update plan from client, member can select profile of a workspace-mate but not an unrelated user
 
 ## Day 3 - Members and roles
 - [ ] RPCs: change_member_role, remove_member, leave_workspace
