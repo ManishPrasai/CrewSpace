@@ -30,7 +30,9 @@ export async function updateSession(request: NextRequest) {
 
   // Do not remove: this refreshes the session and must run before any
   // other logic that depends on the user being authenticated.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, user };
 }
