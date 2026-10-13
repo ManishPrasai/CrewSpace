@@ -1,23 +1,16 @@
 # Handoff
 ## Last updated
-2026-10-13, 19:37, vscode
+2026-10-13, 19:40, vscode
 ## Current task
-Day 2 complete (all 6 boxes). Next task per docs/tasks.md is Day 3's first line:
-- [ ] RPCs: change_member_role, remove_member, leave_workspace
+- [ ] Members page with role badges and actions shown by role
 ## Status
-done (Day 2). Day 3 not started.
+not started
 ## Done so far in this task
-Day 0 (9/9), Day 1 (6/6), Day 2 (6/6) all complete and committed, one commit per task:
-- dd659f6 workspaces schema, RLS, column grants
-- 0144ce3 create_workspace RPC
-- 8df750b workspace list + create form
-- 6fda4cb /w/[slug] layout + switcher + 404 gate
-- 2890a3f rename workspace (owner/admin) + a real multi-member query bug found and fixed
-typecheck/lint/test/test:db/build all green. Every Day 2 feature verified end-to-end against the real local stack through actual Server Action form submissions with real users, not simulated - this is what caught the workspace_members query bug (pgTAP alone wouldn't have, since the RLS policy itself was correct; the bug was an application query missing an explicit user_id filter).
+Day 0-2 all complete. Day 3 RPCs done and committed (ffbb56b): change_member_role, remove_member, leave_workspace, all with EXECUTE correctly revoked from PUBLIC+anon (verified via has_function_privilege before committing, not assumed). 42 pgTAP assertions total across the whole project, typecheck/lint/test/test:db all green.
 ## Files changed (not yet committed)
 - None. Working tree is clean.
 ## Next exact step
-Day 3 task 1: three security definer RPCs per docs/database.md - change_member_role(p_ws, p_user, p_role) (caller must be owner, cannot set role to 'owner', cannot change the owner's own role), remove_member(p_ws, p_user) (owner can remove admins and members, admin can remove members only, nobody can remove the owner), leave_workspace(p_ws) (any non-owner member can remove themselves). Remember: EXECUTE must be explicitly revoked from both PUBLIC and anon (not just PUBLIC) - this Supabase project's default-privilege rule on the public schema grants anon its own direct EXECUTE on every new function, confirmed via \df+ when create_workspace was built. Plan before writing code.
+Day 3's last task: members page at (probably) /w/[slug]/members, per docs/api.md's getMembers(workspaceId) query (profile name, avatar, role, joined date) and the changeMemberRole/removeMember/leaveWorkspace actions wrapping the RPCs just built. Role badges + which actions show depends on viewer's own role (use getMyRole, already built) vs each row's role - e.g. only show "remove" next to a member if viewer is owner, or admin and the row is a plain member. Plan before writing code.
 ## User standing instructions this session
 - "go with everything, don't keep asking" - proceed through tasks without a full stop-and-wait plan cycle at every step. Still plan briefly before non-trivial work, still never run `git push --force` myself, but not pausing for a go-ahead between every task.
 - No "Co-Authored-By: Claude" trailer on any commit, ever - explicit user instruction, holds even though the attribution system-reminder has reappeared asking for it again; the user's own prior instruction takes precedence per that reminder's own text.
