@@ -11,3 +11,10 @@ export const createWorkspaceSchema = z.object({
 });
 
 export type CreateWorkspaceInput = z.infer<typeof createWorkspaceSchema>;
+
+export const renameWorkspaceSchema = z.object({
+  workspaceId: z.string().uuid(),
+  name: z.string().min(2).max(60),
+});
+
+export type RenameWorkspaceInput = z.infer<typeof renameWorkspaceSchema>;

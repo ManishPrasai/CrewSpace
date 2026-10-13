@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WorkspaceSwitcher } from "@/features/workspaces/components/WorkspaceSwitcher";
 import { getMyWorkspaces, getWorkspaceBySlug } from "@/features/workspaces/queries";
@@ -26,6 +27,7 @@ export default async function WorkspaceLayout({
     <div className="mx-auto flex max-w-2xl flex-col gap-6 p-6">
       <header className="flex items-center justify-between">
         <WorkspaceSwitcher current={workspace} workspaces={workspaces} />
+        <Link href={`/w/${workspace.slug}/settings`}>Settings</Link>
       </header>
       {children}
     </div>
