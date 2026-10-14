@@ -26,3 +26,22 @@ jobs:
       - run: npm test
 
       - run: npm run build
+        env:
+          # next build imports every page/route to collect page data,
+          # which runs lib/env.ts's eager Zod validation at module load
+          # time - it needs validly-shaped values present, but nothing
+          # at build time actually calls out to Supabase/Stripe/etc, so
+          # placeholders are correct here (never real secrets in a
+          # workflow file checked into git).
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+          NEXT_PUBLIC_VAPID_PUBLIC_KEY: ci-placeholder-vapid-public-key
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder-service-role-key
+          STRIPE_SECRET_KEY: sk_test_ci_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
+          STRIPE_PRICE_PRO_MONTHLY: price_ci_placeholder
+          RESEND_API_KEY: re_ci_placeholder
+          EMAIL_FROM: "Crewspace <noreply@example.com>"
+          VAPID_PRIVATE_KEY: ci-placeholder-vapid-private-key
+          VAPID_SUBJECT: mailto:ci@example.com
