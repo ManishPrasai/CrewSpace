@@ -13,9 +13,9 @@ describe("getSafeRedirect", () => {
   });
 
   it("falls back for null, undefined, and empty string", () => {
-    expect(getSafeRedirect(null)).toBe("/");
-    expect(getSafeRedirect(undefined)).toBe("/");
-    expect(getSafeRedirect("")).toBe("/");
+    expect(getSafeRedirect(null)).toBe("/workspaces");
+    expect(getSafeRedirect(undefined)).toBe("/workspaces");
+    expect(getSafeRedirect("")).toBe("/workspaces");
   });
 
   it("uses a custom fallback when given one", () => {
@@ -24,22 +24,22 @@ describe("getSafeRedirect", () => {
   });
 
   it("rejects a protocol-relative URL", () => {
-    expect(getSafeRedirect("//evil.com")).toBe("/");
+    expect(getSafeRedirect("//evil.com")).toBe("/workspaces");
   });
 
   it("rejects the backslash variant of a protocol-relative URL", () => {
-    expect(getSafeRedirect("/\\evil.com")).toBe("/");
+    expect(getSafeRedirect("/\\evil.com")).toBe("/workspaces");
   });
 
   it("rejects an absolute URL with a scheme", () => {
-    expect(getSafeRedirect("https://evil.com")).toBe("/");
+    expect(getSafeRedirect("https://evil.com")).toBe("/workspaces");
   });
 
   it("rejects a javascript: URL", () => {
-    expect(getSafeRedirect("javascript:alert(1)")).toBe("/");
+    expect(getSafeRedirect("javascript:alert(1)")).toBe("/workspaces");
   });
 
   it("rejects a path that doesn't start with a slash", () => {
-    expect(getSafeRedirect("dashboard")).toBe("/");
+    expect(getSafeRedirect("dashboard")).toBe("/workspaces");
   });
 });

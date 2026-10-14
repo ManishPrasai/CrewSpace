@@ -1,4 +1,7 @@
-const DEFAULT_REDIRECT = "/";
+// "/" is the public marketing page (src/app/(marketing)/page.tsx) - an
+// authenticated user with no specific `next` should land in the app
+// itself, not back on the logged-out landing page.
+const DEFAULT_REDIRECT = "/workspaces";
 
 // Only ever allow redirecting to a relative path on this app. Rejects
 // protocol-relative ("//evil.com"), backslash-variant ("/\evil.com" -
