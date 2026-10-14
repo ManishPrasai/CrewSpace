@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { sendAnnouncementPush } from "@/features/push/send";
 import { err, ok, type ActionResult } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
 import { getAnnouncements, type AnnouncementPage } from "./queries";
@@ -50,6 +51,15 @@ export async function createAnnouncement(
     // either way, matching every other action in this feature set.
     return err("FORBIDDEN", "You don't have permission to post announcements here.");
   }
+
+  // Never fails this action - sendAnnouncementPush catches and logs its
+  // own errors (docs/api.md: "push failures never fail the announcement
+  // action").
+  await sendAnnouncementPush(
+    parsed.data.workspaceId,
+    { title: parsed.data.title, body: parsed.data.body },
+    user.id,
+  );
 
   const slug = formData.get("slug")?.toString();
   if (slug) {

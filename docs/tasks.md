@@ -66,11 +66,11 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] Unit tests for webhook event mapping
 
 ## Day 8 - PWA and push
-- [ ] `app/manifest.ts`, icons, service worker registration
-- [ ] VAPID keys, push enable/disable toggle, save/delete subscription
-- [ ] Send push on new announcement, cleanup of 404/410
-- [ ] iOS "Add to Home Screen" hint
-- [ ] Test on Android Chrome and iPhone
+- [x] `app/manifest.ts`, icons, service worker registration
+- [x] VAPID keys, push enable/disable toggle, save/delete subscription
+- [x] Send push on new announcement, cleanup of 404/410
+- [x] iOS "Add to Home Screen" hint
+- [ ] Test on Android Chrome and iPhone (needs the user - a real device, not something this session can do)
 
 ## Day 9 - Testing and security review
 - [ ] Playwright: signup > create workspace > invite > accept

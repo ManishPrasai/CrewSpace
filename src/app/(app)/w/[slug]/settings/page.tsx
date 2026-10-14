@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { IosInstallHint } from "@/features/push/components/IosInstallHint";
+import { PushToggle } from "@/features/push/components/PushToggle";
 import { DeleteWorkspaceForm } from "@/features/workspaces/components/DeleteWorkspaceForm";
 import { RenameWorkspaceForm } from "@/features/workspaces/components/RenameWorkspaceForm";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
@@ -25,6 +27,15 @@ export default async function WorkspaceSettingsPage({
       ) : (
         <p>Only the owner or an admin can change workspace settings.</p>
       )}
+
+      <div className="flex flex-col gap-2 border-t pt-6">
+        <h2 className="text-lg font-semibold">Notifications</h2>
+        <p className="text-sm text-muted-foreground">
+          Get notified on this device when any of your workspaces posts a new announcement.
+        </p>
+        <IosInstallHint />
+        <PushToggle />
+      </div>
 
       {isOwner && (
         <div className="flex flex-col gap-2 border-t pt-6">
