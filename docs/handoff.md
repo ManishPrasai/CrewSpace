@@ -1,9 +1,17 @@
 # Handoff
 ## Last updated
-2026-10-14, 12:23, vscode
+2026-10-14, 14:50, vscode
 ## Current task
-Day 7 complete (4/4). Starting Day 8 - PWA and push next.
+Day 7 complete (4/4) and committed. Found and fixed two real bugs via the user's first manual browser walkthrough (not caught by any automated test all session, since everything used deep links). Starting Day 8 - PWA and push next.
 ## Status
+Day 7 done and pushed. Post-Day-7 fixes also done and pushed.
+## Post-Day-7 fixes (found via user's manual testing, not planned work)
+1. `src/app/page.tsx` was still the untouched `create-next-app` scaffold - never replaced since Day 0 setup, invisible all session because every e2e test used a deep link (/signup, /w/[slug], etc.), never the bare `/`. Moved a real landing page to `(marketing)/page.tsx` per docs/architecture.md's file tree, fixed `layout.tsx`'s metadata (was still "Create Next App").
+2. That exposed a second, real bug: `getSafeRedirect`'s default fallback was `"/"`. Harmless while that path was an unused stock page nobody visited; once it became a real public marketing page, logging in with no `next` param sent an authenticated user right back to the logged-out landing page - indistinguishable from login silently failing, which is exactly what the user hit and reported as "keeps taking me back to this page." Default fallback changed to `/workspaces`. Updated `safe-redirect.test.ts`'s assertions on the default (not "changed a test to make it pass" - the intended default itself changed, explained in the commit message).
+Committed as `1a67791`, pushed. typecheck/lint/test all green (test:db not needed, no migration touched).
+## Also done this session, not yet reflected above
+Set a known password (`TestPassword123!`) on the pre-existing `test@example.com` local dev account via the Supabase Auth admin API, and wrote a real local `.env.local` (git-ignored, never committed) with local Supabase dev keys, the user's real Stripe test keys, and a freshly generated VAPID key pair - `npm run dev` previously failed outright for the user since no `.env.local` existed before this (I'd only ever supplied env vars transiently via shell for my own verification runs, never written to disk for the user's own terminal).
+## Status (Day 7 details, for reference)
 Day 7 done, verified, ready to commit.
 ## Done so far in this task (Day 7)
 Day 0-7 all complete. Day 7 (Plan limits and hardening), all 4 boxes:
