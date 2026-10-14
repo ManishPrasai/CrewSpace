@@ -1,14 +1,15 @@
 # Handoff
 ## Last updated
-2026-10-14, 14:50, vscode
+2026-10-14, 15:02, vscode
 ## Current task
-Day 7 complete (4/4) and committed. Found and fixed two real bugs via the user's first manual browser walkthrough (not caught by any automated test all session, since everything used deep links). Starting Day 8 - PWA and push next.
+Day 7 complete (4/4) and committed. Found and fixed three real bugs via the user's first manual browser walkthrough and first check of the Actions tab (none of them caught by any automated test or local verification all session). Starting Day 8 - PWA and push next.
 ## Status
 Day 7 done and pushed. Post-Day-7 fixes also done and pushed.
 ## Post-Day-7 fixes (found via user's manual testing, not planned work)
 1. `src/app/page.tsx` was still the untouched `create-next-app` scaffold - never replaced since Day 0 setup, invisible all session because every e2e test used a deep link (/signup, /w/[slug], etc.), never the bare `/`. Moved a real landing page to `(marketing)/page.tsx` per docs/architecture.md's file tree, fixed `layout.tsx`'s metadata (was still "Create Next App").
 2. That exposed a second, real bug: `getSafeRedirect`'s default fallback was `"/"`. Harmless while that path was an unused stock page nobody visited; once it became a real public marketing page, logging in with no `next` param sent an authenticated user right back to the logged-out landing page - indistinguishable from login silently failing, which is exactly what the user hit and reported as "keeps taking me back to this page." Default fallback changed to `/workspaces`. Updated `safe-redirect.test.ts`'s assertions on the default (not "changed a test to make it pass" - the intended default itself changed, explained in the commit message).
-Committed as `1a67791`, pushed. typecheck/lint/test all green (test:db not needed, no migration touched).
+3. The CI workflow's `build` step has been failing on **every single push to main since Day 0** - the user only checked the Actions tab for the first time just now. `next build` imports every page/route to collect page data, which runs `lib/env.ts`'s eager Zod validation at module load time; `.github/workflows/ci.yml` never set any env vars for that step (typecheck/lint/test don't exercise the build pipeline, so they passed fine and masked it). Fixed by adding placeholder env vars scoped to the `build` step only - nothing at build time actually calls out to Supabase/Stripe, the schemas just need validly-shaped strings. Verified locally first: ran `npm run build` with `.env.local` moved aside and the exact same placeholder values, confirmed it succeeds, before pushing the workflow change.
+Committed as `1a67791` (landing page + redirect) and `456d277` (CI build fix), both pushed. typecheck/lint/test all green locally; CI itself needs the user to re-check the Actions tab on this latest push to confirm green end-to-end (I can't check GitHub Actions myself, no `gh` CLI installed).
 ## Also done this session, not yet reflected above
 Set a known password (`TestPassword123!`) on the pre-existing `test@example.com` local dev account via the Supabase Auth admin API, and wrote a real local `.env.local` (git-ignored, never committed) with local Supabase dev keys, the user's real Stripe test keys, and a freshly generated VAPID key pair - `npm run dev` previously failed outright for the user since no `.env.local` existed before this (I'd only ever supplied env vars transiently via shell for my own verification runs, never written to disk for the user's own terminal).
 ## Status (Day 7 details, for reference)
