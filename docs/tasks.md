@@ -40,7 +40,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 ## Day 4 - Invitations
 - [x] Migration: invitations, seat count function, seat limit trigger, RLS
 - [x] RPC accept_invitation (email match, expiry, lock, seat check)
-- [ ] Create / revoke / resend invite actions, Resend email template
+- [x] Create / revoke / resend invite actions, Resend email template
 - [ ] `/invite/[token]` page with login redirect flow
 - [x] pgTAP: wrong email, expired, revoked, reused token, 6th seat blocked
 
