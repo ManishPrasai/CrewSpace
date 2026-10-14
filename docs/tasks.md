@@ -45,10 +45,10 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] pgTAP: wrong email, expired, revoked, reused token, 6th seat blocked
 
 ## Day 5 - Announcements
-- [ ] Migration: announcements + RLS + updated_at trigger
-- [ ] Feed page with cursor pagination
-- [ ] Create / edit / delete (owner/admin only in UI and RLS)
-- [ ] pgTAP: member cannot write, other workspace cannot read
+- [x] Migration: announcements + RLS + updated_at trigger
+- [x] Feed page with cursor pagination
+- [x] Create / edit / delete (owner/admin only in UI and RLS)
+- [x] pgTAP: member cannot write, other workspace cannot read
 
 ## Day 6 - Billing
 - [ ] Stripe product + monthly price in test mode
