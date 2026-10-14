@@ -29,6 +29,7 @@ export default async function WorkspaceLayout({
         <WorkspaceSwitcher current={workspace} workspaces={workspaces} />
         <nav className="flex items-center gap-3">
           <Link href={`/w/${workspace.slug}/members`}>Members</Link>
+          <Link href={`/w/${workspace.slug}/billing`}>Billing</Link>
           <Link href={`/w/${workspace.slug}/settings`}>Settings</Link>
         </nav>
       </header>

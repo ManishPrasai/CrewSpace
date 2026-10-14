@@ -51,13 +51,13 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] pgTAP: member cannot write, other workspace cannot read
 
 ## Day 6 - Billing
-- [ ] Stripe product + monthly price in test mode
-- [ ] createCheckoutSession, createPortalSession (owner only)
-- [ ] Migration: stripe_events
-- [ ] Webhook route: signature check, idempotency, 4 event handlers
-- [ ] Billing page: current plan, seats used, upgrade / manage buttons
-- [ ] pgTAP: stripe_events not readable by authenticated users
-- [ ] Test with Stripe CLI: upgrade, cancel, payment failure
+- [x] Stripe product + monthly price in test mode
+- [x] createCheckoutSession, createPortalSession (owner only)
+- [x] Migration: stripe_events
+- [x] Webhook route: signature check, idempotency, 4 event handlers
+- [x] Billing page: current plan, seats used, upgrade / manage buttons
+- [x] pgTAP: stripe_events not readable by authenticated users
+- [x] Test with Stripe CLI: upgrade, cancel, payment failure
 
 ## Day 7 - Plan limits and hardening
 - [ ] Downgrade behaviour: invites blocked when over limit, clear UI message

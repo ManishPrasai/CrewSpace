@@ -28,3 +28,6 @@ OAuth is out of scope for MVP to keep auth flows simple and testable.
 
 ## ADR-009: Webhook handlers re-fetch subscription state from Stripe
 Subscription-related webhook events (`checkout.session.completed`, `customer.subscription.updated`) do not trust the event payload for plan/status fields. Instead the handler fetches the current subscription object from the Stripe API and writes plan/subscription_status/current_period_end from that. `checkout.session.completed` only uses the payload to link `stripe_customer_id`/`stripe_subscription_id` to the workspace, then does the same fetch. This makes the result independent of event delivery order, since Stripe does not guarantee webhooks arrive in the order the underlying events occurred.
+
+## ADR-010: Pro plan price
+$29/month USD, picked by the user on Day 6 (docs/requirements.md names the Pro plan but never a price). Created in test mode: product `prod_VRDf1uCEWYrez6` ("Crewspace Pro"), price `price_1UQLM4Fmf9OkLrK8xb8gwF45` (recurring, monthly). `STRIPE_PRICE_PRO_MONTHLY` holds the price id. Changeable later without a migration since nothing besides this env var references the amount.
