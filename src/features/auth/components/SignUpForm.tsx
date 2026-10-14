@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signUp } from "../actions";
 
-export function SignUpForm() {
+export function SignUpForm({ next }: { next?: string }) {
   const [state, formAction, pending] = useActionState(signUp, null);
 
   if (state?.ok) {
@@ -20,6 +20,7 @@ export function SignUpForm() {
 
   return (
     <form action={formAction} className="flex flex-col gap-3">
+      {next && <input type="hidden" name="next" value={next} />}
       <div className="flex flex-col gap-1">
         <label htmlFor="fullName">Full name</label>
         <Input id="fullName" name="fullName" autoComplete="name" required />

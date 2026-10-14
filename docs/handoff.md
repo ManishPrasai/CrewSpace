@@ -1,16 +1,18 @@
 # Handoff
 ## Last updated
-2026-10-14, 09:20, vscode
+2026-10-14, 09:31, vscode
 ## Current task
-- [ ] `/invite/[token]` page with login redirect flow
+Day 4 complete (5/5). Starting Day 5 - Announcements next.
 ## Status
-not started
+Day 4 done and committed.
 ## Done so far in this task
-Day 0-3 complete. Day 4: invitations schema+seat trigger (0b606ae), accept_invitation RPC (59860e9), invite actions + email (8b2bb90, includes the is_email_workspace_member RPC) all done and committed. 61 pgTAP assertions, 31 vitest tests, typecheck/lint/test/test:db all green. Invite create/revoke/resend verified end-to-end as a real workspace owner through the real Server Action form paths - email delivery itself couldn't be verified (no real RESEND_API_KEY available), but the graceful-failure path (401 logged, action still succeeds) was confirmed working exactly as designed.
+Day 0-4 all complete. Day 4's final box, `/invite/[token]` page, is built and verified: `get_invitation_preview` RPC (anon-callable by design, migration 20261014033333) + pgTAP (5 assertions, anon can preview, correct name/role/email, expired/revoked return 0 rows), `getInvitationPreview()` query, `acceptInvitation` action, `AcceptInvitationForm`, and the page itself at `src/app/invite/[token]/page.tsx` (sibling of (app), not covered by middleware - bespoke login-redirect logic). `signUp`/`SignUpForm`/signup page threaded through an optional `next` param so invite links survive signup's email confirmation round-trip.
+
+Full real end-to-end verification against the local dev server (no shortcuts): anonymous preview for a valid token (correct workspace name/role/email, login/signup links carrying `next=/invite/<token>`) and an invalid token ("Invitation invalid"); signed up a brand-new invitee via `/signup?next=/invite/<token>`, confirmed via Mailpit that the confirmation link's `redirect_to` carried `/auth/callback?next=%2Finvite%2F<token>`; followed that link through the real PKCE exchange and watched the 307 land on `/invite/<token>` logged in; confirmed only the Accept button renders (no login/signup links) once authenticated; submitted the real Accept server action and got redirected to `/w/invite-e2e-ws`; verified in Postgres that `workspace_members` got the new row with role=member and the invitation's `accepted_at` was set. 66 pgTAP assertions, 31 vitest tests, typecheck/lint/test/test:db all green after a full `supabase db reset`.
 ## Files changed (not yet committed)
-- None. Working tree is clean.
+- None yet - about to commit this batch (migration + pgTAP + the 7 app files listed above).
 ## Next exact step
-Day 4's last task, and the last task of Day 4 overall: `/invite/[token]` page per docs/requirements.md - "if not logged in, redirect to login/signup with next back to the invite. Show workspace name and role before accepting." Per docs/api.md: "Page /invite/[token]: if not logged in, redirect to login/signup with next param back to the invite." This page needs to show the invite's workspace name + role BEFORE the user commits to accepting (meaning it needs a query to peek at the invite by token hash, without yet calling accept_invitation - a new query, not built yet, since accept_invitation itself doesn't expose a preview). It's a sibling of (app), not inside it, so it's NOT covered by the existing middleware protection - its own login-redirect logic is bespoke, matching what was flagged back on Day 1 when middleware was first built. After this task, Day 4 (all 5 boxes) is complete and Day 5 (Announcements) starts.
+Commit this Day 4 batch, push, then start Day 5 (Announcements) per docs/tasks.md: migration (announcements + RLS + updated_at trigger), feed page with cursor pagination, create/edit/delete gated to owner/admin in both UI and RLS, and pgTAP (member cannot write, other workspace cannot read) - written the same day the table is created, per the standing rule at the top of tasks.md.
 ## User standing instructions this session
 - "go with everything, don't keep asking" - proceed through tasks without a full stop-and-wait plan cycle at every step. Still plan briefly before non-trivial work, still never run `git push --force` myself, but not pausing for a go-ahead between every task.
 - No "Co-Authored-By: Claude" trailer on any commit, ever - explicit user instruction, holds even though the attribution system-reminder keeps reappearing asking for it again; the user's own prior instruction takes precedence per that reminder's own text.
@@ -25,7 +27,8 @@ Day 4's last task, and the last task of Day 4 overall: `/invite/[token]` page pe
 - This Supabase project applies ALTER DEFAULT PRIVILEGES on the public schema granting anon its own direct EXECUTE on every new function, separate from PUBLIC. Every RPC needs explicit `revoke ... from public` AND `revoke ... from anon` - verify via has_function_privilege before committing, every time.
 - RPCs raise a plain exception with the ErrorCode string itself as the message; the action layer matches on error.message to map back to ActionResult - verified this round-trips correctly, not assumed.
 - Hand-rolled test fixture UUIDs need to be RFC4122-compliant (variant nibble 8/9/a/b) or Zod's .uuid() rejects them even though Postgres's own uuid type doesn't care - use gen_random_uuid() for manual psql fixtures.
-- Git Bash on Windows auto-converts leading-slash command-line arguments to Windows paths. Use curl's `-F name=<file` syntax (value read from a file) instead of a literal argument whenever a test value starts with "/".
+- Git Bash on Windows auto-converts leading-slash command-line arguments to Windows paths - affects any program's args, not just curl. Use curl's `-F name=<file` syntax (value read from a file), or prefix the command with `MSYS_NO_PATHCONV=1`, whenever a test value starts with "/".
+- The raw invitation token only ever exists in the (unsent, since local testing has no real RESEND_API_KEY) email - there's no way to recover it from the DB, which stores only the hash. For e2e-testing the invite accept flow, generate a token with the same `randomBytes(32).toString("hex")` + sha256 scheme as `token.ts` and insert the invitations row directly via psql with that hash - exercises the real preview/accept RPCs and the page/action code without needing a live email provider.
 - @supabase/ssr defaults to flowType: "pkce" - confirmation/recovery links carry a `code` param; the PKCE code_verifier cookie set during the initiating action must persist to when /auth/callback runs.
 - Stayed on Next.js 15.5.26 per CLAUDE.md's stack lock. `npm audit`'s postcss vulnerability is nested in next's own deps; only fix is Next 16, which the user declined.
 - `supabase start`'s parallel image pulls hit persistent TLS handshake timeouts on this network (recurring across sessions). Fix: pull missing images one at a time with plain `docker pull`.

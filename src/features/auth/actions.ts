@@ -25,13 +25,22 @@ export async function signUp(
     return err("VALIDATION", "Invalid input", parsed.error.flatten().fieldErrors);
   }
 
+  // Optional: e.g. /invite/[token] carries this through signup so a
+  // brand-new user lands back where they started after confirming their
+  // email. Untrusted (comes from a URL query param on the signup page),
+  // so it goes through the same validation as the login redirect.
+  const next = formData.get("next")?.toString();
+  const callbackUrl = next
+    ? `${clientEnv.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(getSafeRedirect(next))}`
+    : `${clientEnv.NEXT_PUBLIC_APP_URL}/auth/callback`;
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
       data: { full_name: parsed.data.fullName },
-      emailRedirectTo: `${clientEnv.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      emailRedirectTo: callbackUrl,
     },
   });
 

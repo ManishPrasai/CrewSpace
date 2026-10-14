@@ -32,3 +32,28 @@ export async function getInvitations(workspaceId: string): Promise<Invitation[]>
     createdAt: row.created_at,
   }));
 }
+
+export type InvitationPreview = {
+  workspaceName: string;
+  role: "admin" | "member";
+  email: string;
+};
+
+// get_invitation_preview is callable by anon (not just authenticated) -
+// deliberately, since /invite/[token] has to show "you're invited to X"
+// before the visitor logs in or signs up. Returns null for not found/
+// revoked/accepted/expired, never distinguishing which.
+export async function getInvitationPreview(token: string): Promise<InvitationPreview | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_invitation_preview", { p_token: token });
+
+  if (error) {
+    throw error;
+  }
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  const row = data[0];
+  return { workspaceName: row.workspace_name, role: row.role, email: row.email };
+}

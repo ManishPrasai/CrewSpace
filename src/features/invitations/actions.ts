@@ -1,11 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { isUniqueViolation } from "@/lib/errors";
 import { err, ok, type ActionResult } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
 import { sendInvitationEmail } from "./email";
-import { createInvitationSchema, resendInvitationSchema, revokeInvitationSchema } from "./schemas";
+import {
+  acceptInvitationSchema,
+  createInvitationSchema,
+  resendInvitationSchema,
+  revokeInvitationSchema,
+} from "./schemas";
 import { generateInvitationToken } from "./token";
 
 const RATE_LIMIT_PER_HOUR = 20;
@@ -210,4 +216,44 @@ export async function resendInvitation(
     }
   }
   return result;
+}
+
+export async function acceptInvitation(
+  _prevState: ActionResult<void> | null,
+  formData: FormData,
+): Promise<ActionResult<void>> {
+  const parsed = acceptInvitationSchema.safeParse({
+    token: formData.get("token"),
+  });
+  if (!parsed.success) {
+    return err("VALIDATION", "Invalid input", parsed.error.flatten().fieldErrors);
+  }
+
+  const supabase = await createClient();
+  const { data: workspaceId, error } = await supabase.rpc("accept_invitation", {
+    p_token: parsed.data.token,
+  });
+
+  if (error) {
+    if (error.message.includes("UNAUTHENTICATED")) {
+      return err("UNAUTHENTICATED", "Please log in to accept this invitation.");
+    }
+    if (error.message.includes("SEAT_LIMIT")) {
+      return err("SEAT_LIMIT", "This workspace has reached the free plan's 5-seat limit.");
+    }
+    // Not found, wrong email, expired, revoked, already accepted: one
+    // generic message, same as the RPC itself never reveals which.
+    return err("INVITE_INVALID", "This invitation is invalid or has expired.");
+  }
+
+  // accept_invitation returns the workspace id, not the slug - look it
+  // up to redirect somewhere real. The caller is a member now, so RLS
+  // allows this.
+  const { data: workspace } = await supabase
+    .from("workspaces")
+    .select("slug")
+    .eq("id", workspaceId)
+    .single();
+
+  redirect(workspace ? `/w/${workspace.slug}` : "/workspaces");
 }
