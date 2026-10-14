@@ -60,10 +60,10 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] Test with Stripe CLI: upgrade, cancel, payment failure
 
 ## Day 7 - Plan limits and hardening
-- [ ] Downgrade behaviour: invites blocked when over limit, clear UI message
-- [ ] Delete workspace (owner, confirm slug, blocked while subscription active)
-- [ ] Invitation rate limit
-- [ ] Unit tests for webhook event mapping
+- [x] Downgrade behaviour: invites blocked when over limit, clear UI message
+- [x] Delete workspace (owner, confirm slug, blocked while subscription active)
+- [x] Invitation rate limit
+- [x] Unit tests for webhook event mapping
 
 ## Day 8 - PWA and push
 - [ ] `app/manifest.ts`, icons, service worker registration

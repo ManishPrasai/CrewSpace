@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { err, ok, type ActionResult } from "@/lib/result";
 import { isUniqueViolation } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
-import { createWorkspaceSchema, renameWorkspaceSchema } from "./schemas";
+import { createWorkspaceSchema, deleteWorkspaceSchema, renameWorkspaceSchema } from "./schemas";
 
 export async function createWorkspace(
   _prevState: ActionResult<{ slug: string }> | null,
@@ -74,4 +74,56 @@ export async function renameWorkspace(
   revalidatePath(`/w/${data[0].slug}`);
   revalidatePath("/workspaces");
   return ok();
+}
+
+export async function deleteWorkspace(
+  _prevState: ActionResult<void> | null,
+  formData: FormData,
+): Promise<ActionResult<void>> {
+  const parsed = deleteWorkspaceSchema.safeParse({
+    workspaceId: formData.get("workspaceId"),
+    slugConfirmation: formData.get("slugConfirmation"),
+  });
+  if (!parsed.success) {
+    return err("VALIDATION", "Invalid input", parsed.error.flatten().fieldErrors);
+  }
+
+  const supabase = await createClient();
+  const { data: workspace, error: fetchError } = await supabase
+    .from("workspaces")
+    .select("slug, plan")
+    .eq("id", parsed.data.workspaceId)
+    .single();
+  if (fetchError || !workspace) {
+    return err("NOT_FOUND", "Workspace not found.");
+  }
+
+  if (workspace.slug !== parsed.data.slugConfirmation) {
+    return err("VALIDATION", "Type the workspace's URL exactly to confirm deletion.", {
+      slugConfirmation: ["Doesn't match this workspace's URL."],
+    });
+  }
+  if (workspace.plan !== "free") {
+    return err("CONFLICT", "Cancel the Pro subscription before deleting this workspace.");
+  }
+
+  // RLS (owner, and only while plan='free') is the real enforcement -
+  // the checks above exist to give a specific reason, since a blocked
+  // DELETE just silently affects 0 rows rather than throwing.
+  const { data, error } = await supabase
+    .from("workspaces")
+    .delete()
+    .eq("id", parsed.data.workspaceId)
+    .select("id");
+
+  if (error) {
+    console.error("deleteWorkspace failed", error);
+    return err("INTERNAL", "Something went wrong. Please try again.");
+  }
+  if (!data || data.length === 0) {
+    return err("FORBIDDEN", "Only the owner can delete this workspace.");
+  }
+
+  revalidatePath("/workspaces");
+  redirect("/workspaces");
 }

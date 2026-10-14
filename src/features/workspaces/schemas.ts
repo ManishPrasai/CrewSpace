@@ -18,3 +18,10 @@ export const renameWorkspaceSchema = z.object({
 });
 
 export type RenameWorkspaceInput = z.infer<typeof renameWorkspaceSchema>;
+
+export const deleteWorkspaceSchema = z.object({
+  workspaceId: z.string().uuid(),
+  slugConfirmation: z.string().min(1),
+});
+
+export type DeleteWorkspaceInput = z.infer<typeof deleteWorkspaceSchema>;

@@ -1,5 +1,5 @@
 begin;
-select plan(11);
+select plan(17);
 
 -- Fixtures inserted directly (bypasses RLS as the postgres role) - no
 -- create_workspace RPC exists yet (that's a separate Day 2 task), and
@@ -96,6 +96,57 @@ select is(
   (select count(*) from workspaces),
   0::bigint,
   'user in no workspace sees no workspaces at all'
+);
+
+-- Day 7: deletion is owner-only AND blocked while plan='pro' (docs: a
+-- workspace can't be deleted while its subscription is active).
+reset role;
+
+insert into workspaces (id, name, slug, plan) values
+  ('33333333-3333-3333-3333-333333333333', 'Workspace C Pro', 'workspace-c-pro', 'pro');
+insert into workspace_members (workspace_id, user_id, role) values
+  ('33333333-3333-3333-3333-333333333333', :'owner_b_id'::uuid, 'owner');
+
+select tests.authenticate_as(:'member_a_id'::uuid);
+
+select lives_ok(
+  $$ delete from workspaces where id = '11111111-1111-1111-1111-111111111111' $$,
+  'a plain member can run a delete, but RLS hides the row from it'
+);
+
+reset role;
+select is(
+  (select count(*) from workspaces where id = '11111111-1111-1111-1111-111111111111'),
+  1::bigint,
+  'the member could not actually delete the workspace'
+);
+
+select tests.authenticate_as(:'owner_b_id'::uuid);
+
+select lives_ok(
+  $$ delete from workspaces where id = '33333333-3333-3333-3333-333333333333' $$,
+  'even the owner can run a delete on their pro-plan workspace, but RLS hides it'
+);
+
+reset role;
+select is(
+  (select count(*) from workspaces where id = '33333333-3333-3333-3333-333333333333'),
+  1::bigint,
+  'a workspace on the pro plan was not deleted, subscription still active'
+);
+
+select tests.authenticate_as(:'owner_a_id'::uuid);
+
+select lives_ok(
+  $$ delete from workspaces where id = '11111111-1111-1111-1111-111111111111' $$,
+  'the owner of a free-plan workspace can delete it'
+);
+
+reset role;
+select is(
+  (select count(*) from workspaces where id = '11111111-1111-1111-1111-111111111111'),
+  0::bigint,
+  'the free-plan workspace is actually gone'
 );
 
 reset role;
