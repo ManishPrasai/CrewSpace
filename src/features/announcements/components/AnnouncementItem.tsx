@@ -19,6 +19,8 @@ import type { Announcement } from "../queries";
 // role when they posted, which the audit found misleading). Hover/
 // focus-within reveals Edit + a (.) menu with a #FAFAF8-ish background;
 // on touch it's always visible (03-components.md).
+// handoff/06-accessibility-and-qa.md feed semantics: ol > li > article,
+// title h2, <time datetime>.
 export function AnnouncementItem({
   announcement,
   slug,
@@ -53,67 +55,73 @@ export function AnnouncementItem({
 
   if (isEditing) {
     return (
-      <li className="rounded-xl bg-muted/60 px-3.5 py-5">
-        <form action={updateAction} className="flex flex-col gap-3">
-          <input type="hidden" name="id" value={announcement.id} />
-          <input type="hidden" name="slug" value={slug} />
-          <Field label="Title" htmlFor={`title-${announcement.id}`} error={fieldErrors?.title?.[0]}>
-            <Input name="title" defaultValue={announcement.title} required />
-          </Field>
-          <Field label="Body" htmlFor={`body-${announcement.id}`} error={fieldErrors?.body?.[0]}>
-            <Textarea name="body" defaultValue={announcement.body} required minRows={4} />
-          </Field>
-          {updateState && !updateState.ok && !fieldErrors && (
-            <FormAlert tone="error">{updateState.error.message}</FormAlert>
-          )}
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setIsEditing(false)} disabled={updatePending}>
-              Cancel
-            </Button>
-            <SubmitButton pendingLabel="Saving...">Save</SubmitButton>
-          </div>
-        </form>
+      <li>
+        <article className="rounded-xl bg-muted/60 px-3.5 py-5">
+          <form action={updateAction} className="flex flex-col gap-3">
+            <input type="hidden" name="id" value={announcement.id} />
+            <input type="hidden" name="slug" value={slug} />
+            <Field label="Title" htmlFor={`title-${announcement.id}`} error={fieldErrors?.title?.[0]}>
+              <Input name="title" defaultValue={announcement.title} required />
+            </Field>
+            <Field label="Body" htmlFor={`body-${announcement.id}`} error={fieldErrors?.body?.[0]}>
+              <Textarea name="body" defaultValue={announcement.body} required minRows={4} />
+            </Field>
+            {updateState && !updateState.ok && !fieldErrors && (
+              <FormAlert tone="error">{updateState.error.message}</FormAlert>
+            )}
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsEditing(false)} disabled={updatePending}>
+                Cancel
+              </Button>
+              <SubmitButton pendingLabel="Saving...">Save</SubmitButton>
+            </div>
+          </form>
+        </article>
       </li>
     );
   }
 
   return (
-    <li className="group/post -mx-3.5 rounded-xl px-3.5 py-5 hover:bg-muted/60">
-      <div className="flex items-center gap-2.5 text-[13.5px]">
-        <Avatar id={announcement.authorId ?? announcement.id} name={announcement.authorName} size={32} />
-        <span className="font-semibold">{announcement.authorName ?? "Unknown"}</span>
-        <time className="text-muted-foreground">{time}</time>
-        {canManage && (
-          <div className="ml-auto flex items-center gap-0.5 opacity-0 transition-opacity group-hover/post:opacity-100 group-focus-within/post:opacity-100 [@media(hover:none)]:opacity-100">
-            <Button type="button" variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-              Edit
-            </Button>
-            <ConfirmDialog
-              trigger={
-                <Button type="button" variant="ghost" size="icon-sm" aria-label="More actions">
-                  <MoreHorizontalIcon />
-                </Button>
-              }
-              title="Delete this announcement?"
-              body="This can't be undone. Everyone in the workspace will stop seeing it."
-              confirmLabel="Delete"
-              pendingLabel="Deleting..."
-              action={deleteAnnouncement}
-              hiddenFields={{ id: announcement.id, slug }}
-              onConfirmed={() => {
-                onDeleted(announcement.id);
-                toast.add({ title: "Announcement deleted", type: "success" });
-              }}
-            />
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col gap-2 pl-[42px]">
-        <h3 className="text-[19px] font-semibold tracking-[-0.015em]">{announcement.title}</h3>
-        <p className="max-w-[34em] whitespace-pre-wrap text-[16px] leading-[1.7] text-foreground/90">
-          {announcement.body}
-        </p>
-      </div>
+    <li>
+      <article className="group/post -mx-3.5 rounded-xl px-3.5 py-5 hover:bg-muted/60">
+        <div className="flex items-center gap-2.5 text-[13.5px]">
+          <Avatar id={announcement.authorId ?? announcement.id} name={announcement.authorName} size={32} />
+          <span className="font-semibold">{announcement.authorName ?? "Unknown"}</span>
+          <time dateTime={announcement.createdAt} className="text-muted-foreground">
+            {time}
+          </time>
+          {canManage && (
+            <div className="ml-auto flex items-center gap-0.5 opacity-0 transition-opacity group-hover/post:opacity-100 group-focus-within/post:opacity-100 [@media(hover:none)]:opacity-100">
+              <Button type="button" variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
+                Edit
+              </Button>
+              <ConfirmDialog
+                trigger={
+                  <Button type="button" variant="ghost" size="icon-sm" aria-label="More actions">
+                    <MoreHorizontalIcon />
+                  </Button>
+                }
+                title="Delete this announcement?"
+                body="This can't be undone. Everyone in the workspace will stop seeing it."
+                confirmLabel="Delete"
+                pendingLabel="Deleting..."
+                action={deleteAnnouncement}
+                hiddenFields={{ id: announcement.id, slug }}
+                onConfirmed={() => {
+                  onDeleted(announcement.id);
+                  toast.add({ title: "Announcement deleted", type: "success" });
+                }}
+              />
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 pl-[42px]">
+          <h2 className="text-[19px] font-semibold tracking-[-0.015em]">{announcement.title}</h2>
+          <p className="max-w-[34em] whitespace-pre-wrap text-[16px] leading-[1.7] text-foreground/90">
+            {announcement.body}
+          </p>
+        </div>
+      </article>
     </li>
   );
 }

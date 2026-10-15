@@ -77,7 +77,7 @@ export function AnnouncementFeed({
       {groups.map((group) => (
         <div key={group.key + group.date}>
           <FeedDayDivider date={group.date} />
-          <ul>
+          <ol>
             {group.items.map((announcement) => (
               <AnnouncementItem
                 key={announcement.id}
@@ -88,7 +88,7 @@ export function AnnouncementFeed({
                 onDeleted={handleDeleted}
               />
             ))}
-          </ul>
+          </ol>
         </div>
       ))}
       <div className="flex justify-center pt-5">

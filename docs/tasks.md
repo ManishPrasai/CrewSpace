@@ -73,15 +73,17 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [ ] Test on Android Chrome and iPhone (needs the user - a real device, not something this session can do)
 
 ## Day 9 - Testing and security review
-**PAUSED** - resumes after Crewspace V2 ships below, so this runs once against the final UI instead of twice. See ADR-011.
+**UN-PAUSED** - Crewspace V2 (below) is complete as of 2026-10-15. See ADR-014.
 - [ ] Playwright: signup > create workspace > invite > accept
 - [ ] Playwright: member cannot post announcement
 - [ ] Playwright: free plan blocks 6th seat
 - [ ] AI security review (see prompts.md) and fix findings
 - [ ] Lighthouse check: PWA installable, accessibility
+- [ ] Screen-reader smoke test (VoiceOver/NVDA) on the feed, members and dialogs - genuinely not done yet, needs a real screen reader (06-accessibility-and-qa.md item 17)
+- [ ] Frame-by-frame visual comparison against L2/D1-D6/S1-S15/A1-A10/W1-W2/M1-M4 at 1440/1280/1024/768/390/360 - spot-checked during each redesign step, not run as one exhaustive pass (06-accessibility-and-qa.md item 28)
 
 ## Day 10 - Ship
-**PAUSED** - see Day 9.
+**UN-PAUSED** - see Day 9.
 - [ ] Deploy to Vercel, connect Supabase cloud, production Stripe webhook endpoint (test mode keys)
 - [ ] Seed demo workspace + demo login for clients
 - [ ] README: screenshots, features, architecture diagram, security notes, setup steps
@@ -99,4 +101,6 @@ Frontend-only rebuild per the claude.ai/design handoff package. Full plan, audit
 - [x] 7. Settings: sub-nav (anchors, since General/Account are the only real content on this one route), identity/access rows, Danger zone restyle, Account section wiring `updateProfile`/`getMyProfile` and a link to change password
 - [x] 8. Billing: PlanCard/PlanCompare, StatusBadge finally wired up, redirect-pending/error states (`?status=success`/`cancelled`, pre-existing)
 - [x] 9. Marketing `/`: real `(marketing)/layout.tsx` (nav + footer) + L2 composition, responsive (hero visual simplified to feed+toast per the design's own allowed fallback, L3)
-- [ ] 10. Dark mode + Appearance toggle, then the full QA pass from `06-accessibility-and-qa.md`
+- [x] 10. Dark mode + Appearance toggle (cookie + blocking inline script, no SSR cookie read - see ADR-013), plus a targeted fix pass against `06-accessibility-and-qa.md` (skip link, feed `ol>li>article`/`h2`/`time[datetime]`, reduced-motion `transition-duration`); the full 24-test matrix, Lighthouse and screen-reader passes are Day 9's job now (see ADR-014)
+
+**V2 redesign complete (2026-10-15).** All 10 steps shipped, committed, pushed. See ADR-011 through ADR-014.

@@ -42,6 +42,14 @@ export default async function WorkspaceLayout({
 
   return (
     <div className="min-h-screen bg-canvas">
+      {/* handoff/06-accessibility-and-qa.md: first tab stop, moves focus
+          to main#content - only visible while focused. */}
+      <a
+        href="#content"
+        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-2 focus-visible:left-2 focus-visible:z-50 focus-visible:rounded-md focus-visible:bg-foreground focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:font-medium focus-visible:text-background"
+      >
+        Skip to content
+      </a>
       {/* Mobile top bar (<768) - no dedicated component, just this one spot. */}
       <div className="flex h-14 items-center justify-between border-b border-border bg-background px-4 md:hidden">
         <WorkspaceSwitcher current={workspace} workspaces={workspaces} compact />
@@ -54,7 +62,8 @@ export default async function WorkspaceLayout({
 
         <main
           id="content"
-          className="min-h-screen flex-1 overflow-hidden rounded-t-[22px] bg-background pb-20 md:min-h-0 md:rounded-none md:pb-0 lg:rounded-xl lg:border lg:border-border lg:shadow-raised"
+          tabIndex={-1}
+          className="min-h-screen flex-1 overflow-hidden rounded-t-[22px] bg-background pb-20 outline-none md:min-h-0 md:rounded-none md:pb-0 lg:rounded-xl lg:border lg:border-border lg:shadow-raised"
         >
           {children}
         </main>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CheckIcon } from "lucide-react";
+import { Avatar } from "@/components/app/Avatar";
 import { Button } from "@/components/ui/button";
 
 const CHECK = <CheckIcon className="size-4 shrink-0 text-brand-ink" aria-hidden="true" />;
@@ -124,9 +125,7 @@ export default function MarketingPage() {
                 <div className="mt-4 flex flex-col gap-2 border-b border-border-subtle pb-4 text-[12.5px]">
                   <span className="font-mono text-[11px] text-muted-foreground">TODAY</span>
                   <div className="flex items-center gap-2">
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#E7DCCB] text-[9.5px] font-semibold">
-                      MO
-                    </span>
+                    <Avatar id="maya-okafor" name="Maya Okafor" size={24} />
                     <span className="font-semibold">Maya Okafor</span>
                     <span className="text-muted-foreground">09:12</span>
                   </div>
@@ -141,8 +140,8 @@ export default function MarketingPage() {
 
             <div className="absolute -right-3 -bottom-5 flex w-[280px] items-center gap-3 rounded-xl bg-foreground p-3.5 text-background shadow-raised sm:-right-6">
               <div className="flex shrink-0">
-                <span className="-mr-2 size-6 rounded-full border-2 border-foreground bg-[#E7DCCB]" />
-                <span className="size-6 rounded-full border-2 border-foreground bg-[#D3E0E4]" />
+                <Avatar id="maya-okafor" name="Maya Okafor" size={24} className="-mr-2 ring-2 ring-foreground" />
+                <Avatar id="daniel-reyes" name="Daniel Reyes" size={24} className="ring-2 ring-foreground" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[13px] font-medium">Invitation sent to lena@halden.co</span>
