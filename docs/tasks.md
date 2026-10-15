@@ -93,7 +93,7 @@ Frontend-only rebuild per the claude.ai/design handoff package. Full plan, audit
 - [x] 1. Tokens & fonts: `tokens.css` into `globals.css`, Geist/Geist Mono/Instrument Serif via `next/font`, real `BrandMark`-based PWA icon set replacing Day 8's placeholders
 - [x] 2. Primitives: Button variants + `SubmitButton`, Input/Textarea/NativeSelect/Field/FormAlert, Spinner/Skeleton, Avatar/AvatarStack/WorkspaceMonogram/RoleBadge/StatusBadge, EmptyState, Tabs/Tooltip (`@base-ui/react`, already installed - no new dependency)
 - [x] 3. Auth & onboarding: restyle signup/login/reset×2/invite×3, "Forgot password?" link, fixed the `updatePassword` → `/` redirect bug, `updateProfile` action + `getMyProfile` query built (UI wiring deferred to the Settings step), invite page's F9 "wrong account" state added
-- [ ] 4. App shell: AppSidebar/AppRail/MobileTabBar, AccountMenu, restyled WorkspaceSwitcher, PanelHeader, `loading.tsx`/`error.tsx`
+- [x] 4. App shell: AppSidebar/AppRail/MobileTabBar, AccountMenu, restyled WorkspaceSwitcher, PanelHeader, `loading.tsx`/`error.tsx`
 - [ ] 5. Announcements: composer (`<details>` no-JS fallback), day dividers, edit/delete confirm, load-more end state, toasts, `authorRole` query addition
 - [ ] 6. Members: table + role-gated row menus, pending section, InviteDialog, MemberDetailsDialog + `/w/[slug]/members/[memberId]` no-JS fallback
 - [ ] 7. Settings: sub-nav, identity/access rows, Danger zone restyle, Account section

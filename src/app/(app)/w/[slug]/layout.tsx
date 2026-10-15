@@ -1,8 +1,19 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AppRail } from "@/components/app/AppRail";
+import { AppSidebar } from "@/components/app/AppSidebar";
+import { MobileTabBar } from "@/components/app/MobileTabBar";
+import { getMyProfile } from "@/features/auth/queries";
+import { AccountMenu } from "@/features/auth/components/AccountMenu";
+import { getBillingInfo } from "@/features/billing/queries";
 import { WorkspaceSwitcher } from "@/features/workspaces/components/WorkspaceSwitcher";
 import { getMyWorkspaces, getWorkspaceBySlug } from "@/features/workspaces/queries";
 
+// handoff/02-visual-design-spec.md layout:
+// - >=1024: 264px sidebar (232 at 1024-1279), white content panel
+//   (1px border, 14px radius) inset 8px from the viewport.
+// - 768-1023: 64px icon rail, content panel full-bleed.
+// - <768: 56px top bar (switcher + avatar), white content sheet
+//   (22px top radius), bottom tab bar, safe-area padding.
 export default async function WorkspaceLayout({
   children,
   params,
@@ -21,19 +32,35 @@ export default async function WorkspaceLayout({
     notFound();
   }
 
-  const workspaces = await getMyWorkspaces();
+  const [workspaces, profile, billing] = await Promise.all([
+    getMyWorkspaces(),
+    getMyProfile(),
+    getBillingInfo(workspace.id),
+  ]);
+
+  const user = { name: profile?.fullName ?? null, email: profile?.email ?? null };
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 p-6">
-      <header className="flex items-center justify-between">
-        <WorkspaceSwitcher current={workspace} workspaces={workspaces} />
-        <nav className="flex items-center gap-3">
-          <Link href={`/w/${workspace.slug}/members`}>Members</Link>
-          <Link href={`/w/${workspace.slug}/billing`}>Billing</Link>
-          <Link href={`/w/${workspace.slug}/settings`}>Settings</Link>
-        </nav>
-      </header>
-      {children}
+    <div className="min-h-screen bg-canvas">
+      {/* Mobile top bar (<768) - no dedicated component, just this one spot. */}
+      <div className="flex h-14 items-center justify-between border-b border-border bg-background px-4 md:hidden">
+        <WorkspaceSwitcher current={workspace} workspaces={workspaces} compact />
+        <AccountMenu user={user} slug={slug} compact />
+      </div>
+
+      <div className="flex lg:p-2">
+        <AppSidebar current={workspace} workspaces={workspaces} user={user} seatsUsed={billing.seatsUsed} />
+        <AppRail current={workspace} workspaces={workspaces} user={user} />
+
+        <main
+          id="content"
+          className="min-h-screen flex-1 rounded-t-[22px] bg-background pb-20 md:min-h-0 md:rounded-none md:pb-0 lg:rounded-xl lg:border lg:border-border lg:shadow-raised"
+        >
+          <div className="mx-auto max-w-[1000px] px-5 py-6 sm:px-8">{children}</div>
+        </main>
+      </div>
+
+      <MobileTabBar slug={slug} />
     </div>
   );
 }
