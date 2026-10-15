@@ -82,10 +82,10 @@ export default function MarketingPage() {
                 always know who has access.
               </p>
               <div className="flex gap-2.5">
-                <Button size="lg" render={<Link href="/signup" />}>
+                <Button size="lg" nativeButton={false} render={<Link href="/signup" />}>
                   Create a workspace
                 </Button>
-                <Button size="lg" variant="outline" render={<Link href="/login" />}>
+                <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/login" />}>
                   Log in
                 </Button>
               </div>
@@ -268,7 +268,7 @@ export default function MarketingPage() {
               <br />
               Multiple workspaces per account
             </p>
-            <Button className="mt-auto" render={<Link href="/signup" />}>
+            <Button className="mt-auto" nativeButton={false} render={<Link href="/signup" />}>
               Create a workspace
             </Button>
           </div>
@@ -287,6 +287,7 @@ export default function MarketingPage() {
             </p>
             <Button
               className="mt-auto bg-background text-foreground hover:bg-background/90"
+              nativeButton={false}
               render={<Link href="/signup" />}
             >
               Start on Free, upgrade later
@@ -304,10 +305,10 @@ export default function MarketingPage() {
             <span className="font-accent font-normal italic tracking-[-0.025em] text-brand-ink">look.</span>
           </h2>
           <div className="flex flex-col gap-2.5 sm:w-[220px]">
-            <Button size="lg" render={<Link href="/signup" />}>
+            <Button size="lg" nativeButton={false} render={<Link href="/signup" />}>
               Create a workspace
             </Button>
-            <Button size="lg" variant="outline" render={<Link href="/login" />}>
+            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/login" />}>
               Log in
             </Button>
           </div>

@@ -2,11 +2,23 @@ import webpush, { WebPushError } from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { clientEnv, serverEnv } from "@/lib/env";
 
-webpush.setVapidDetails(
-  serverEnv.VAPID_SUBJECT,
-  clientEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-  serverEnv.VAPID_PRIVATE_KEY,
-);
+let vapidConfigured = false;
+
+// Deliberately lazy, not module-scope: setVapidDetails validates the key
+// immediately, so calling it at import time made `next build`'s page-
+// data-collection step crash the whole build in any environment without
+// a valid VAPID key set (e.g. CI, caught via a real failed build) - this
+// module gets imported transitively by every route that can reach
+// createAnnouncement, whether or not a push is ever actually sent.
+function ensureVapidConfigured(): void {
+  if (vapidConfigured) return;
+  webpush.setVapidDetails(
+    serverEnv.VAPID_SUBJECT,
+    clientEnv.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    serverEnv.VAPID_PRIVATE_KEY,
+  );
+  vapidConfigured = true;
+}
 
 // Fire-and-logged, never thrown: the caller (createAnnouncement) must
 // never fail because a push happened to fail (docs/api.md).
@@ -16,6 +28,7 @@ export async function sendAnnouncementPush(
   authorId: string,
 ): Promise<void> {
   try {
+    ensureVapidConfigured();
     const admin = createAdminClient();
 
     const { data: members, error: membersError } = await admin

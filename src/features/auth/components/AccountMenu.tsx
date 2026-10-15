@@ -1,28 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { LogOut, Plus, SunMoon, UserCircle } from "lucide-react";
+import { LogOut, Plus, UserCircle } from "lucide-react";
 import { Avatar } from "@/components/app/Avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { applyTheme, getStoredTheme, type Theme } from "@/lib/theme";
 import { signOut } from "../actions";
 
-const THEME_LABEL: Record<Theme, string> = { system: "System", light: "Light", dark: "Dark" };
-
 // handoff/03-components.md: Account settings, Appearance (System/Light/
-// Dark), All workspaces, Create workspace, Log out.
+// Dark), All workspaces, Create workspace, Log out. The Appearance
+// toggle is built (src/lib/theme.ts) but intentionally not shown here -
+// the user's own call (2026-10-15): dark is the default for everyone
+// for now, no switcher, until asked to bring it back.
 export function AccountMenu({
   user,
   slug,
@@ -33,18 +27,6 @@ export function AccountMenu({
   compact?: boolean;
 }) {
   const router = useRouter();
-  // Read after mount, not during render: the stored theme lives in a
-  // cookie the server already resolved for <html>'s class, but this
-  // label is purely for which radio item shows checked - no SSR need.
-  const [theme, setThemeState] = useState<Theme>("system");
-  useEffect(() => {
-    setThemeState(getStoredTheme());
-  }, []);
-
-  function handleThemeChange(next: Theme) {
-    setThemeState(next);
-    applyTheme(next);
-  }
 
   return (
     <DropdownMenu>
@@ -63,21 +45,6 @@ export function AccountMenu({
           <UserCircle className="size-4" strokeWidth={1.5} />
           Account settings
         </DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <SunMoon className="size-4" strokeWidth={1.5} />
-            <span className="flex-1">Appearance</span>
-            <span className="text-muted-foreground">{THEME_LABEL[theme]}</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={theme} onValueChange={(value) => handleThemeChange(value as Theme)}>
-              <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/workspaces")}>All workspaces</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/workspaces#create")}>
           <Plus className="size-4" strokeWidth={1.5} />
