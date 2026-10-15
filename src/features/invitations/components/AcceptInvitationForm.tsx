@@ -1,19 +1,18 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
+import { FormAlert } from "@/components/ui/form-alert";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { acceptInvitation } from "../actions";
 
 export function AcceptInvitationForm({ token }: { token: string }) {
-  const [state, formAction, pending] = useActionState(acceptInvitation, null);
+  const [state, formAction] = useActionState(acceptInvitation, null);
 
   return (
     <form action={formAction} className="flex flex-col gap-3">
       <input type="hidden" name="token" value={token} />
-      {state && !state.ok && <p role="alert">{state.error.message}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Joining..." : "Accept invitation"}
-      </Button>
+      {state && !state.ok && <FormAlert tone="error">{state.error.message}</FormAlert>}
+      <SubmitButton pendingLabel="Joining...">Accept invitation</SubmitButton>
     </form>
   );
 }

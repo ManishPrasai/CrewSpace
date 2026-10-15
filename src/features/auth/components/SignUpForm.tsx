@@ -1,51 +1,39 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/app/PasswordInput";
+import { Field } from "@/components/ui/field";
+import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { signUp } from "../actions";
 
-export function SignUpForm({ next }: { next?: string }) {
-  const [state, formAction, pending] = useActionState(signUp, null);
+export function SignUpForm({ next, defaultEmail }: { next?: string; defaultEmail?: string }) {
+  const [state, formAction] = useActionState(signUp, null);
 
+  // Success swap, unchanged behavior (handoff/01-product-behavior-spec.md).
   if (state?.ok) {
-    return (
-      <p role="status">
-        Check your email to confirm your account.
-      </p>
-    );
+    return <p role="status">Check your email to confirm your account.</p>;
   }
 
   const fieldErrors = state && !state.ok ? state.error.fieldErrors : undefined;
 
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={formAction} className="flex flex-col gap-4">
       {next && <input type="hidden" name="next" value={next} />}
-      <div className="flex flex-col gap-1">
-        <label htmlFor="fullName">Full name</label>
-        <Input id="fullName" name="fullName" autoComplete="name" required />
-        {fieldErrors?.fullName && <p role="alert">{fieldErrors.fullName[0]}</p>}
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="email">Email</label>
-        <Input id="email" name="email" type="email" autoComplete="email" required />
-        {fieldErrors?.email && <p role="alert">{fieldErrors.email[0]}</p>}
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password">Password</label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          required
-        />
-        {fieldErrors?.password && <p role="alert">{fieldErrors.password[0]}</p>}
-      </div>
-      {state && !state.ok && !fieldErrors && <p role="alert">{state.error.message}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Signing up..." : "Sign up"}
-      </Button>
+      <Field label="Full name" htmlFor="fullName" error={fieldErrors?.fullName?.[0]}>
+        <Input name="fullName" autoComplete="name" required />
+      </Field>
+      <Field label="Email" htmlFor="email" error={fieldErrors?.email?.[0]}>
+        <Input name="email" type="email" autoComplete="email" defaultValue={defaultEmail} required />
+      </Field>
+      <Field label="Password" htmlFor="password" error={fieldErrors?.password?.[0]}>
+        <PasswordInput name="password" autoComplete="new-password" required />
+      </Field>
+      {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
+      <SubmitButton pendingLabel="Creating account..." className="mt-1">
+        Create account
+      </SubmitButton>
     </form>
   );
 }

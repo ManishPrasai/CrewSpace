@@ -1,31 +1,25 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/app/PasswordInput";
+import { Field } from "@/components/ui/field";
+import { FormAlert } from "@/components/ui/form-alert";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { updatePassword } from "../actions";
 
 export function UpdatePasswordForm() {
-  const [state, formAction, pending] = useActionState(updatePassword, null);
+  const [state, formAction] = useActionState(updatePassword, null);
   const fieldErrors = state && !state.ok ? state.error.fieldErrors : undefined;
 
   return (
-    <form action={formAction} className="flex flex-col gap-3">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password">New password</label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          required
-        />
-        {fieldErrors?.password && <p role="alert">{fieldErrors.password[0]}</p>}
-      </div>
-      {state && !state.ok && !fieldErrors && <p role="alert">{state.error.message}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Updating..." : "Update password"}
-      </Button>
+    <form action={formAction} className="flex flex-col gap-4">
+      <Field label="New password" htmlFor="password" error={fieldErrors?.password?.[0]}>
+        <PasswordInput name="password" autoComplete="new-password" required />
+      </Field>
+      {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
+      <SubmitButton pendingLabel="Updating..." className="mt-1">
+        Update password
+      </SubmitButton>
     </form>
   );
 }

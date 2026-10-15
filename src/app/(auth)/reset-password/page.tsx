@@ -1,10 +1,10 @@
+import { AuthCard } from "@/components/app/AuthCard";
 import { RequestPasswordResetForm } from "@/features/auth/components/RequestPasswordResetForm";
 
 export default function ResetPasswordPage() {
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Reset your password</h1>
+    <AuthCard title="Reset your password" description="We'll email you a link to choose a new one.">
       <RequestPasswordResetForm />
-    </main>
+    </AuthCard>
   );
 }

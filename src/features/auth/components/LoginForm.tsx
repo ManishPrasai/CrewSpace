@@ -1,37 +1,40 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/app/PasswordInput";
+import { Field } from "@/components/ui/field";
+import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { signIn } from "../actions";
 
-export function LoginForm({ next }: { next?: string }) {
-  const [state, formAction, pending] = useActionState(signIn, null);
+export function LoginForm({ next, defaultEmail }: { next?: string; defaultEmail?: string }) {
+  const [state, formAction] = useActionState(signIn, null);
   const fieldErrors = state && !state.ok ? state.error.fieldErrors : undefined;
 
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={formAction} className="flex flex-col gap-4">
       {next && <input type="hidden" name="next" value={next} />}
-      <div className="flex flex-col gap-1">
-        <label htmlFor="email">Email</label>
-        <Input id="email" name="email" type="email" autoComplete="email" required />
-        {fieldErrors?.email && <p role="alert">{fieldErrors.email[0]}</p>}
+      <Field label="Email" htmlFor="email" error={fieldErrors?.email?.[0]}>
+        <Input name="email" type="email" autoComplete="email" defaultValue={defaultEmail} required />
+      </Field>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <label htmlFor="password" className="text-[13px] font-medium text-foreground">
+            Password
+          </label>
+          {/* Link only (handoff/04-routes.md: new on /login) - /reset-password already exists. */}
+          <Link href="/reset-password" className="text-[13px] text-brand-ink hover:underline">
+            Forgot password?
+          </Link>
+        </div>
+        <PasswordInput name="password" autoComplete="current-password" required />
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password">Password</label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-        />
-        {fieldErrors?.password && <p role="alert">{fieldErrors.password[0]}</p>}
-      </div>
-      {state && !state.ok && !fieldErrors && <p role="alert">{state.error.message}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Logging in..." : "Log in"}
-      </Button>
+      {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
+      <SubmitButton pendingLabel="Logging in..." className="mt-1">
+        Log in
+      </SubmitButton>
     </form>
   );
 }

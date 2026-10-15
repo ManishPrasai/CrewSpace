@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { clientEnv } from "@/lib/env";
 import { getSafeRedirect } from "@/lib/auth/safe-redirect";
@@ -10,6 +11,7 @@ import {
   signInSchema,
   signUpSchema,
   updatePasswordSchema,
+  updateProfileSchema,
 } from "./schemas";
 
 export async function signUp(
@@ -85,10 +87,15 @@ export async function signIn(
   redirect(getSafeRedirect(formData.get("next")?.toString()));
 }
 
-export async function signOut(): Promise<void> {
+export async function signOut(formData?: FormData): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  // Optional `next` (handoff/08-authentication.md's "wrong account"
+  // flow: log out, land back on /login?next=/invite/[token]). Validated
+  // the same way as every other redirect target; defaults to /login,
+  // unchanged for every existing caller that doesn't pass one.
+  const next = formData?.get("next")?.toString();
+  redirect(next ? `/login?next=${encodeURIComponent(getSafeRedirect(next))}` : "/login");
 }
 
 export async function requestPasswordReset(
@@ -134,5 +141,47 @@ export async function updatePassword(
     return err("UNAUTHENTICATED", "Your reset link has expired. Please request a new one.");
   }
 
-  redirect("/");
+  // "/" is the public marketing page - same bug class as the login
+  // redirect fixed earlier this session. A user who just set a password
+  // is authenticated and belongs in the app, not back on the logged-out
+  // landing page.
+  redirect("/workspaces");
+}
+
+// Account -> Profile (handoff/05-dependencies.md D1): profiles' RLS
+// already lets a user update their own full_name/avatar_url (Day 1),
+// this is the first UI to use that grant.
+export async function updateProfile(
+  _prevState: ActionResult<void> | null,
+  formData: FormData,
+): Promise<ActionResult<void>> {
+  const parsed = updateProfileSchema.safeParse({
+    fullName: formData.get("fullName"),
+  });
+  if (!parsed.success) {
+    return err("VALIDATION", "Invalid input", parsed.error.flatten().fieldErrors);
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return err("UNAUTHENTICATED", "Please log in.");
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ full_name: parsed.data.fullName })
+    .eq("id", user.id);
+  if (error) {
+    console.error("updateProfile failed", error);
+    return err("INTERNAL", "Something went wrong. Please try again.");
+  }
+
+  const slug = formData.get("slug")?.toString();
+  if (slug) {
+    revalidatePath(`/w/${slug}/settings`);
+  }
+  return ok();
 }

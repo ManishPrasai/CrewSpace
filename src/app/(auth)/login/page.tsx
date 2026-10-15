@@ -1,21 +1,27 @@
+import Link from "next/link";
+import { AuthCard } from "@/components/app/AuthCard";
+import { AuthNotice } from "@/components/app/AuthNotice";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string }>;
+  searchParams: Promise<{ next?: string; error?: string; email?: string }>;
 }) {
-  const { next, error } = await searchParams;
+  const { next, error, email } = await searchParams;
 
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Log in</h1>
-      {error === "auth" && (
-        <p role="alert">
-          That link has expired or already been used. Please try again.
-        </p>
-      )}
-      <LoginForm next={next} />
-    </main>
+    <AuthCard title="Welcome back" description="Log in to Crewspace.">
+      <div className="mb-4 flex flex-col gap-2 empty:mb-0">
+        <AuthNotice code={error} />
+      </div>
+      <LoginForm next={next} defaultEmail={email} />
+      <p className="mt-5 text-center text-[13.5px] text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"} className="text-brand-ink hover:underline">
+          Sign up
+        </Link>
+      </p>
+    </AuthCard>
   );
 }
