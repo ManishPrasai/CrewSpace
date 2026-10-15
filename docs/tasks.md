@@ -97,6 +97,6 @@ Frontend-only rebuild per the claude.ai/design handoff package. Full plan, audit
 - [x] 5. Announcements: composer (`<details>` no-JS fallback, N/⌘Enter), day dividers, edit/delete `ConfirmDialog`, load-more end state, toasts (new `Toaster` mounted globally); no `authorRole` addition (R06 - see ADR-011)
 - [x] 6. Members: table + role-gated row ⋯ menus, pending section (ConfirmDialog on Revoke), InviteDialog; no separate MemberDetailsDialog - the `/w/[slug]/members/[memberId]` page serves as both the details view and the no-JS fallback (see decisions.md)
 - [x] 7. Settings: sub-nav (anchors, since General/Account are the only real content on this one route), identity/access rows, Danger zone restyle, Account section wiring `updateProfile`/`getMyProfile` and a link to change password
-- [ ] 8. Billing: PlanCard/PlanCompare/StatusBadge, redirect-pending/error states
+- [x] 8. Billing: PlanCard/PlanCompare, StatusBadge finally wired up, redirect-pending/error states (`?status=success`/`cancelled`, pre-existing)
 - [ ] 9. Marketing `/`: real layout + L2 composition, responsive
 - [ ] 10. Dark mode + Appearance toggle, then the full QA pass from `06-accessibility-and-qa.md`
