@@ -125,5 +125,5 @@ export async function deleteWorkspace(
   }
 
   revalidatePath("/workspaces");
-  redirect("/workspaces");
+  redirect("/workspaces?notice=deleted");
 }
