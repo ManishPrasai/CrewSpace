@@ -28,7 +28,7 @@ export default async function MembersPage({
   } = await supabase.auth.getUser();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-[1000px] flex-col gap-6 px-5 py-6 sm:px-8">
       <div>
         <h1 className="text-xl font-semibold">Members</h1>
         <ul>

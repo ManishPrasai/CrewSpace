@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
 const geist = Geist({
@@ -44,7 +45,7 @@ export default function RootLayout({
         className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
       >
         <ServiceWorkerRegister />
-        {children}
+        <Toaster>{children}</Toaster>
       </body>
     </html>
   );

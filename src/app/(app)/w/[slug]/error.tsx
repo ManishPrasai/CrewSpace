@@ -10,7 +10,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center gap-3 py-16 text-center">
+    <div className="mx-auto flex max-w-[1000px] flex-col items-center gap-3 px-5 py-16 text-center sm:px-8">
       <p className="text-[15px] font-medium">Something went wrong.</p>
       <p className="max-w-[34em] text-[14.5px] text-muted-foreground">
         Try again, or come back in a moment if the problem continues.

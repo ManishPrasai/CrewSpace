@@ -54,9 +54,9 @@ export default async function WorkspaceLayout({
 
         <main
           id="content"
-          className="min-h-screen flex-1 rounded-t-[22px] bg-background pb-20 md:min-h-0 md:rounded-none md:pb-0 lg:rounded-xl lg:border lg:border-border lg:shadow-raised"
+          className="min-h-screen flex-1 overflow-hidden rounded-t-[22px] bg-background pb-20 md:min-h-0 md:rounded-none md:pb-0 lg:rounded-xl lg:border lg:border-border lg:shadow-raised"
         >
-          <div className="mx-auto max-w-[1000px] px-5 py-6 sm:px-8">{children}</div>
+          {children}
         </main>
       </div>
 

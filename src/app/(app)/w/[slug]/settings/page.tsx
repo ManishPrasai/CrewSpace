@@ -20,7 +20,7 @@ export default async function WorkspaceSettingsPage({
   const isOwner = workspace.role === "owner";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-[1000px] flex-col gap-6 px-5 py-6 sm:px-8">
       <h1 className="text-xl font-semibold">Settings</h1>
       {canRename ? (
         <RenameWorkspaceForm workspaceId={workspace.id} name={workspace.name} />
