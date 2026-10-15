@@ -1,10 +1,36 @@
 "use client";
 
-import { useActionState } from "react";
+import Link from "next/link";
+import { useState } from "react";
+import { MoreHorizontalIcon } from "lucide-react";
+import { Avatar } from "@/components/app/Avatar";
+import { ConfirmDialog } from "@/components/app/ConfirmDialog";
+import { RoleBadge } from "@/components/app/RoleBadge";
 import { Button } from "@/components/ui/button";
-import { changeMemberRole, leaveWorkspace, removeMember } from "../actions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { leaveWorkspace, removeMember } from "../actions";
 import type { Member } from "../queries";
 
+// handoff/02-visual-design-spec.md + the AU2c audit correction: name +
+// role badge + a ⋯ menu only - no email, no Joined column (R07/R08
+// both default off, see docs/decisions.md). "View details" is a real
+// link to the no-JS fallback page (05-dependencies R15), not a client
+// dialog - there's little enough member data (no email, no joined date)
+// that a separate dialog implementation would just duplicate that
+// page's content, so the page is the only implementation, used by both
+// the JS and no-JS paths.
+//
+// Remove/Leave render as a ConfirmDialog *outside* the dropdown, driven
+// by local open state rather than a nested DialogTrigger - a dialog
+// trigger nested inside a menu item never opens, because the menu
+// closes (and can unmount the item) on the same click before the
+// dialog gets a chance to.
 export function MemberRow({
   member,
   workspaceId,
@@ -18,9 +44,8 @@ export function MemberRow({
   viewerRole: "owner" | "admin" | "member";
   viewerUserId: string;
 }) {
-  const [roleState, roleAction, rolePending] = useActionState(changeMemberRole, null);
-  const [removeState, removeAction, removePending] = useActionState(removeMember, null);
-  const [leaveState, leaveAction, leavePending] = useActionState(leaveWorkspace, null);
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [leaveOpen, setLeaveOpen] = useState(false);
 
   const isSelf = member.userId === viewerUserId;
   const canChangeRole = viewerRole === "owner" && member.role !== "owner" && !isSelf;
@@ -29,52 +54,76 @@ export function MemberRow({
     member.role !== "owner" &&
     (viewerRole === "owner" || (viewerRole === "admin" && member.role === "member"));
   const canLeave = isSelf && member.role !== "owner";
+  const hasMenu = canChangeRole || canRemove || canLeave;
 
   return (
-    <li className="flex flex-col gap-1 border-b py-2">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p>{member.fullName ?? "Unnamed"}</p>
-          <p className="text-sm text-muted-foreground">{member.role}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {canChangeRole && (
-            <form action={roleAction} className="flex items-center gap-1">
-              <input type="hidden" name="workspaceId" value={workspaceId} />
-              <input type="hidden" name="slug" value={slug} />
-              <input type="hidden" name="userId" value={member.userId} />
-              <select name="role" defaultValue={member.role} disabled={rolePending}>
-                <option value="admin">admin</option>
-                <option value="member">member</option>
-              </select>
-              <Button type="submit" size="sm" disabled={rolePending}>
-                Update
-              </Button>
-            </form>
-          )}
+    <div className="grid grid-cols-[minmax(0,1fr)_120px_44px] items-center gap-2 border-b border-border-subtle px-4 py-3 last:border-b-0">
+      <Link href={`/w/${slug}/members/${member.userId}`} className="flex min-w-0 items-center gap-3">
+        <Avatar id={member.userId} name={member.fullName} size={32} />
+        <span className="truncate text-[14px] font-medium">
+          {member.fullName ?? "Unnamed"}
+          {isSelf && <span className="font-normal text-muted-foreground"> · You</span>}
+        </span>
+      </Link>
+      <RoleBadge role={member.role} />
+      {hasMenu ? (
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button type="button" variant="ghost" size="icon-sm" aria-label="Member actions" />}
+            >
+              <MoreHorizontalIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem render={<Link href={`/w/${slug}/members/${member.userId}`} />}>
+                View details
+              </DropdownMenuItem>
+              {canChangeRole && (
+                <DropdownMenuItem render={<Link href={`/w/${slug}/members/${member.userId}`} />}>
+                  Change role
+                </DropdownMenuItem>
+              )}
+              {(canRemove || canLeave) && <DropdownMenuSeparator />}
+              {canRemove && (
+                <DropdownMenuItem variant="destructive" onClick={() => setRemoveOpen(true)}>
+                  Remove from workspace…
+                </DropdownMenuItem>
+              )}
+              {canLeave && (
+                <DropdownMenuItem variant="destructive" onClick={() => setLeaveOpen(true)}>
+                  Leave workspace…
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
           {canRemove && (
-            <form action={removeAction}>
-              <input type="hidden" name="workspaceId" value={workspaceId} />
-              <input type="hidden" name="slug" value={slug} />
-              <input type="hidden" name="userId" value={member.userId} />
-              <Button type="submit" size="sm" variant="destructive" disabled={removePending}>
-                Remove
-              </Button>
-            </form>
+            <ConfirmDialog
+              open={removeOpen}
+              onOpenChange={setRemoveOpen}
+              title={`Remove ${member.fullName ?? "this member"}?`}
+              body="They lose access immediately. You can invite them again later."
+              confirmLabel="Remove"
+              pendingLabel="Removing..."
+              action={removeMember}
+              hiddenFields={{ workspaceId, userId: member.userId, slug }}
+            />
           )}
           {canLeave && (
-            <form action={leaveAction}>
-              <input type="hidden" name="workspaceId" value={workspaceId} />
-              <Button type="submit" size="sm" variant="destructive" disabled={leavePending}>
-                Leave
-              </Button>
-            </form>
+            <ConfirmDialog
+              open={leaveOpen}
+              onOpenChange={setLeaveOpen}
+              title="Leave this workspace?"
+              body="You'll lose access immediately. Someone will need to invite you again to rejoin."
+              confirmLabel="Leave"
+              pendingLabel="Leaving..."
+              action={leaveWorkspace}
+              hiddenFields={{ workspaceId }}
+            />
           )}
-        </div>
-      </div>
-      {roleState && !roleState.ok && <p role="alert">{roleState.error.message}</p>}
-      {removeState && !removeState.ok && <p role="alert">{removeState.error.message}</p>}
-      {leaveState && !leaveState.ok && <p role="alert">{leaveState.error.message}</p>}
-    </li>
+        </>
+      ) : (
+        <span />
+      )}
+    </div>
   );
 }

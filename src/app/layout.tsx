@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Suspense } from "react";
+import { NoticeToast } from "@/components/app/NoticeToast";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
@@ -45,7 +47,12 @@ export default function RootLayout({
         className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
       >
         <ServiceWorkerRegister />
-        <Toaster>{children}</Toaster>
+        <Toaster>
+          <Suspense fallback={null}>
+            <NoticeToast />
+          </Suspense>
+          {children}
+        </Toaster>
       </body>
     </html>
   );

@@ -21,8 +21,16 @@ import type { ActionResult } from "@/lib/result";
 // fallback route). Initial focus on Cancel; confirm is destructiveSolid.
 // R29: closing (Esc, backdrop, Cancel) is blocked while the action is
 // pending, and a failed action keeps the dialog open with the error shown.
+//
+// `trigger` self-manages open state (the common case). When the trigger
+// has to live inside something that unmounts on click - a DropdownMenu
+// item, which closes itself before a nested DialogTrigger would ever get
+// to open - pass `open`/`onOpenChange` instead and render this dialog as
+// a sibling of the menu, not inside it.
 export function ConfirmDialog({
   trigger,
+  open: openProp,
+  onOpenChange: onOpenChangeProp,
   title,
   body,
   confirmLabel,
@@ -31,7 +39,9 @@ export function ConfirmDialog({
   hiddenFields,
   onConfirmed,
 }: {
-  trigger: React.ReactElement;
+  trigger?: React.ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   title: string;
   body: React.ReactNode;
   confirmLabel: string;
@@ -43,7 +53,9 @@ export function ConfirmDialog({
   hiddenFields?: Record<string, string>;
   onConfirmed?: () => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = openProp ?? internalOpen;
+  const setOpen = onOpenChangeProp ?? setInternalOpen;
   const [state, formAction, pending] = useActionState(action, null);
 
   useEffect(() => {
@@ -51,13 +63,13 @@ export function ConfirmDialog({
       setOpen(false);
       onConfirmed?.();
     }
-    // onConfirmed is a stable callback from the parent, safe to omit.
+    // onConfirmed/setOpen are stable across renders, safe to omit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return (
     <Dialog open={open} onOpenChange={(next) => !pending && setOpen(next)}>
-      <DialogTrigger render={trigger} />
+      {trigger && <DialogTrigger render={trigger} />}
       <DialogContent showCloseButton={false}>
         <form action={formAction} className="flex flex-col gap-4">
           {hiddenFields &&

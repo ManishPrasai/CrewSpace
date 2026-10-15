@@ -1,35 +1,48 @@
 "use client";
 
-import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
+import { useActionState, useEffect } from "react";
+import { Field } from "@/components/ui/field";
+import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { createInvitation } from "../actions";
 
-export function InviteMemberForm({ workspaceId, slug }: { workspaceId: string; slug: string }) {
-  const [state, formAction, pending] = useActionState(createInvitation, null);
+export function InviteMemberForm({
+  workspaceId,
+  slug,
+  onSent,
+}: {
+  workspaceId: string;
+  slug: string;
+  onSent?: () => void;
+}) {
+  const [state, formAction] = useActionState(createInvitation, null);
   const fieldErrors = state && !state.ok ? state.error.fieldErrors : undefined;
 
+  useEffect(() => {
+    if (state?.ok) {
+      onSent?.();
+    }
+    // onSent is a stable callback from the parent, safe to omit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={formAction} className="flex flex-col gap-4">
       <input type="hidden" name="workspaceId" value={workspaceId} />
       <input type="hidden" name="slug" value={slug} />
-      <div className="flex flex-col gap-1">
-        <label htmlFor="email">Email</label>
-        <Input id="email" name="email" type="email" autoComplete="off" required />
-        {fieldErrors?.email && <p role="alert">{fieldErrors.email[0]}</p>}
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="role">Role</label>
-        <select id="role" name="role" defaultValue="member">
-          <option value="admin">admin</option>
-          <option value="member">member</option>
-        </select>
-      </div>
-      {state?.ok && <p role="status">Invitation sent.</p>}
-      {state && !state.ok && !fieldErrors && <p role="alert">{state.error.message}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Sending..." : "Send invite"}
-      </Button>
+      <Field label="Email" htmlFor="invite-email" error={fieldErrors?.email?.[0]}>
+        <Input id="invite-email" name="email" type="email" autoComplete="off" required />
+      </Field>
+      <Field label="Role" htmlFor="invite-role">
+        <NativeSelect id="invite-role" name="role" defaultValue="member">
+          <option value="admin">Admin</option>
+          <option value="member">Member</option>
+        </NativeSelect>
+      </Field>
+      {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
+      <SubmitButton pendingLabel="Sending...">Send invite</SubmitButton>
     </form>
   );
 }

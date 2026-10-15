@@ -105,5 +105,5 @@ export async function leaveWorkspace(
   }
 
   revalidatePath("/workspaces");
-  redirect("/workspaces");
+  redirect("/workspaces?notice=left");
 }
