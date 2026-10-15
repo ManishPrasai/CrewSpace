@@ -73,6 +73,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [ ] Test on Android Chrome and iPhone (needs the user - a real device, not something this session can do)
 
 ## Day 9 - Testing and security review
+**PAUSED** - resumes after Crewspace V2 ships below, so this runs once against the final UI instead of twice. See ADR-011.
 - [ ] Playwright: signup > create workspace > invite > accept
 - [ ] Playwright: member cannot post announcement
 - [ ] Playwright: free plan blocks 6th seat
@@ -80,8 +81,22 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [ ] Lighthouse check: PWA installable, accessibility
 
 ## Day 10 - Ship
+**PAUSED** - see Day 9.
 - [ ] Deploy to Vercel, connect Supabase cloud, production Stripe webhook endpoint (test mode keys)
 - [ ] Seed demo workspace + demo login for clients
 - [ ] README: screenshots, features, architecture diagram, security notes, setup steps
 - [ ] Record 1 to 2 minute demo video
 - [ ] Add to Upwork portfolio as a case study
+
+## Crewspace V2 - "Direction C v2" visual redesign (inserted between Day 8 and Day 9)
+Frontend-only rebuild per the claude.ai/design handoff package. Full plan, audit findings and decisions: `C:\Users\Manish Prasai\.claude\plans\bright-inventing-peach.md` and ADR-011. One PR per step, per the design's own `07-implementation-plan.md`.
+- [x] 1. Tokens & fonts: `tokens.css` into `globals.css`, Geist/Geist Mono/Instrument Serif via `next/font`, real `BrandMark`-based PWA icon set replacing Day 8's placeholders
+- [ ] 2. Primitives: Button variants + `SubmitButton`, Input/Textarea/NativeSelect/Field/FormAlert, Spinner/Skeleton, Avatar/Monogram/RoleBadge/StatusBadge, EmptyState, Tabs/Tooltip (`@base-ui/react`, already installed)
+- [ ] 3. Auth & onboarding: restyle signup/login/reset×2/invite×3, add "Forgot password?" link, fix the `updatePassword` → `/` redirect bug (found in audit), build Account → Profile + Password
+- [ ] 4. App shell: AppSidebar/AppRail/MobileTabBar, AccountMenu, restyled WorkspaceSwitcher, PanelHeader, `loading.tsx`/`error.tsx`
+- [ ] 5. Announcements: composer (`<details>` no-JS fallback), day dividers, edit/delete confirm, load-more end state, toasts, `authorRole` query addition
+- [ ] 6. Members: table + role-gated row menus, pending section, InviteDialog, MemberDetailsDialog + `/w/[slug]/members/[memberId]` no-JS fallback
+- [ ] 7. Settings: sub-nav, identity/access rows, Danger zone restyle, Account section
+- [ ] 8. Billing: PlanCard/PlanCompare/StatusBadge, redirect-pending/error states
+- [ ] 9. Marketing `/`: real layout + L2 composition, responsive
+- [ ] 10. Dark mode + Appearance toggle, then the full QA pass from `06-accessibility-and-qa.md`
