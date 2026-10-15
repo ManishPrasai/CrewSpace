@@ -91,7 +91,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 ## Crewspace V2 - "Direction C v2" visual redesign (inserted between Day 8 and Day 9)
 Frontend-only rebuild per the claude.ai/design handoff package. Full plan, audit findings and decisions: `C:\Users\Manish Prasai\.claude\plans\bright-inventing-peach.md` and ADR-011. One PR per step, per the design's own `07-implementation-plan.md`.
 - [x] 1. Tokens & fonts: `tokens.css` into `globals.css`, Geist/Geist Mono/Instrument Serif via `next/font`, real `BrandMark`-based PWA icon set replacing Day 8's placeholders
-- [ ] 2. Primitives: Button variants + `SubmitButton`, Input/Textarea/NativeSelect/Field/FormAlert, Spinner/Skeleton, Avatar/Monogram/RoleBadge/StatusBadge, EmptyState, Tabs/Tooltip (`@base-ui/react`, already installed)
+- [x] 2. Primitives: Button variants + `SubmitButton`, Input/Textarea/NativeSelect/Field/FormAlert, Spinner/Skeleton, Avatar/AvatarStack/WorkspaceMonogram/RoleBadge/StatusBadge, EmptyState, Tabs/Tooltip (`@base-ui/react`, already installed - no new dependency)
 - [ ] 3. Auth & onboarding: restyle signup/login/reset×2/invite×3, add "Forgot password?" link, fix the `updatePassword` → `/` redirect bug (found in audit), build Account → Profile + Password
 - [ ] 4. App shell: AppSidebar/AppRail/MobileTabBar, AccountMenu, restyled WorkspaceSwitcher, PanelHeader, `loading.tsx`/`error.tsx`
 - [ ] 5. Announcements: composer (`<details>` no-JS fallback), day dividers, edit/delete confirm, load-more end state, toasts, `authorRole` query addition
