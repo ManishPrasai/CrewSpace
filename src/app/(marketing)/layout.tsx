@@ -14,7 +14,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <BrandMark variant="full" size={26} />
           <span className="text-[20px] font-semibold tracking-[-0.045em]">Crewspace</span>
         </Link>
-        <nav className="hidden items-center gap-0.5 rounded-xl border border-border-subtle bg-background p-1 text-[14px] text-[#3B3A37] md:flex">
+        <nav className="hidden items-center gap-0.5 rounded-xl border border-border bg-background p-1 text-[14px] text-[#3B3A37] md:flex">
           <a href="#what-it-is" className="rounded-lg px-3.5 py-1.5 hover:bg-muted">
             Product
           </a>

@@ -14,13 +14,13 @@ const DASH = <span className="text-muted-foreground">—</span>;
 // keyboard-focusable controls that imply functionality they don't have.
 function Step1Preview() {
   return (
-    <div className="flex h-[210px] flex-col justify-center gap-2.5 rounded-xl border border-border-subtle bg-muted/60 p-5.5">
+    <div className="flex h-[210px] flex-col justify-center gap-2.5 rounded-xl border border-border-subtle bg-muted p-5.5">
       <span className="text-[12.5px] font-medium">Workspace name</span>
       <div className="flex h-[38px] items-center rounded-[9px] border border-input-hover bg-background px-3 text-[14px]">
         Halden &amp; Co.
       </div>
       <div className="flex h-[38px] items-center overflow-hidden rounded-[9px] border border-input-hover bg-background font-mono text-[12.5px]">
-        <span className="flex h-full items-center border-r border-border-subtle bg-muted/60 px-2.5 text-muted-foreground">
+        <span className="flex h-full items-center border-r border-border-subtle bg-muted px-2.5 text-muted-foreground">
           crewspace.app/w/
         </span>
         <span className="px-2.5">halden-co</span>
@@ -31,7 +31,7 @@ function Step1Preview() {
 
 function Step2Preview() {
   return (
-    <div className="flex h-[210px] flex-col justify-center gap-2.5 rounded-xl border border-border-subtle bg-muted/60 p-5.5">
+    <div className="flex h-[210px] flex-col justify-center gap-2.5 rounded-xl border border-border-subtle bg-muted p-5.5">
       <div className="flex gap-1.5">
         <div className="flex h-[38px] flex-1 items-center rounded-[9px] border border-brand bg-background px-3 text-[14px] ring-[3px] ring-brand-soft">
           lena@halden.co
@@ -53,7 +53,7 @@ function Step2Preview() {
 
 function Step3Preview() {
   return (
-    <div className="flex h-[210px] flex-col items-center justify-center rounded-xl border border-border-subtle bg-muted/60 p-5.5">
+    <div className="flex h-[210px] flex-col items-center justify-center rounded-xl border border-border-subtle bg-muted p-5.5">
       <div className="flex w-full flex-col rounded-[10px] border border-input-hover bg-background">
         <span className="px-3 pt-2.5 pb-0.5 text-[14px] font-semibold">Office closed Friday</span>
         <span className="px-3 pb-3 text-[13px] leading-[1.5] text-muted-foreground">
@@ -179,7 +179,7 @@ export default function MarketingPage() {
         <div className="relative mx-auto hidden h-[760px] min-[1440px]:block rounded-[28px] border border-[#DFDED9] bg-[#E9E9E5] overflow-hidden">
           <div className="absolute top-[56px] left-[56px] flex h-[640px] w-[980px] overflow-hidden rounded-2xl border border-[#DCDBD6] bg-background shadow-[0_30px_60px_-40px_rgba(0,0,0,.35)]">
             <div className="flex w-[210px] flex-col gap-3.5 p-2.5">
-              <div className="flex items-center gap-2.5 rounded-[10px] border border-border-subtle bg-background p-1.5">
+              <div className="flex items-center gap-2.5 rounded-[10px] border border-border bg-background p-1.5">
                 <span className="flex size-[26px] shrink-0 items-center justify-center rounded-lg bg-brand-soft text-[12px] font-semibold text-brand-ink">
                   H
                 </span>
@@ -198,7 +198,7 @@ export default function MarketingPage() {
                 <div className="py-1.5 pr-2.5 pl-[27px] text-muted-foreground">Settings</div>
               </div>
             </div>
-            <div className="m-1.5 ml-0 flex flex-1 flex-col gap-5 rounded-[11px] border border-border-subtle bg-background px-14 py-8">
+            <div className="m-1.5 ml-0 flex flex-1 flex-col gap-5 rounded-[11px] border border-border bg-background px-14 py-8">
               <div className="flex items-center justify-between">
                 <span className="text-[22px] font-semibold tracking-[-0.03em]">Announcements</span>
                 <span className="rounded-[9px] bg-primary px-3 py-2 text-[12.5px] font-medium text-primary-foreground">
@@ -248,7 +248,7 @@ export default function MarketingPage() {
               <span className="rounded-lg bg-muted px-2.5 py-1.5 text-[12.5px] font-medium">Membership</span>
               <span className="px-2.5 py-1.5 text-[12.5px] text-muted-foreground">Role</span>
             </div>
-            <div className="flex flex-col gap-2.5 border-t border-border-subtle bg-muted/60 p-3">
+            <div className="flex flex-col gap-2.5 border-t border-border-subtle bg-muted p-3">
               <div className="flex flex-col rounded-xl border border-border-subtle bg-background text-[13px]">
                 <div className="flex items-center justify-between border-b border-border-subtle px-3.5 py-2.5">
                   <span className="text-muted-foreground">Role</span>
@@ -295,10 +295,10 @@ export default function MarketingPage() {
         </div>
 
         {/* Simplified feed+toast composition below 1440px (L3: layers simplify below the design's own frame width). */}
-        <div className="relative mx-auto w-full max-w-[860px] rounded-2xl border border-border-subtle bg-muted/60 p-5 min-[1440px]:hidden sm:p-8">
-          <div className="flex overflow-hidden rounded-xl border border-border-subtle bg-background shadow-raised">
+        <div className="relative mx-auto w-full max-w-[860px] rounded-2xl border border-border bg-muted p-5 min-[1440px]:hidden sm:p-8">
+          <div className="flex overflow-hidden rounded-xl border border-border bg-background shadow-raised">
             <div className="hidden w-[150px] shrink-0 flex-col gap-3 p-3 text-[12px] md:flex">
-              <div className="flex items-center gap-2 rounded-lg border border-border-subtle bg-muted/60 p-1.5">
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-background p-1.5">
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-brand-soft text-[11px] font-semibold text-brand-ink">
                   H
                 </span>
@@ -388,7 +388,7 @@ export default function MarketingPage() {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (
-              <div key={s.n} className="flex flex-col gap-0 rounded-[20px] border border-border-subtle p-2.5">
+              <div key={s.n} className="flex flex-col gap-0 rounded-[20px] border border-border bg-background p-2.5">
                 {s.preview}
                 <div className="flex flex-col gap-1.5 px-3.5 pt-5 pb-3.5">
                   <span className="font-mono text-[12px] text-brand-ink">{s.n}</span>
@@ -416,7 +416,7 @@ export default function MarketingPage() {
               something isn&rsquo;t available, Crewspace says who can do it.
             </p>
           </div>
-          <div className="overflow-x-auto rounded-[20px] border border-border-subtle p-2.5 lg:col-span-7 lg:col-start-6">
+          <div className="overflow-x-auto rounded-[20px] border border-border bg-background p-2.5 lg:col-span-7 lg:col-start-6">
             <div className="min-w-[480px]">
               <div className="grid grid-cols-[minmax(0,1fr)_72px_72px_72px] px-4.5 py-3.5 text-[13px] font-medium text-[#55544F]">
                 <span />
@@ -424,7 +424,7 @@ export default function MarketingPage() {
                 <span>Admin</span>
                 <span>Member</span>
               </div>
-              <div className="flex flex-col rounded-xl border border-border-subtle bg-muted/60 text-[14.5px]">
+              <div className="flex flex-col rounded-xl border border-border-subtle bg-muted text-[14.5px]">
                 {ROLE_ROWS.map((row) => (
                   <div
                     key={row.label}
@@ -452,7 +452,7 @@ export default function MarketingPage() {
               The owner upgrades from Billing. Checkout, invoices and cancellation are handled by Stripe.
             </p>
           </div>
-          <div className="flex flex-col gap-4.5 rounded-[20px] border border-border-subtle p-7 lg:col-span-4 lg:col-start-5">
+          <div className="flex flex-col gap-4.5 rounded-[20px] border border-border bg-background p-7 lg:col-span-4 lg:col-start-5">
             <div className="flex items-center justify-between">
               <span className="text-[16px] font-semibold">Free</span>
               <span className="font-mono text-[12px] text-muted-foreground">Up to 5 members</span>
