@@ -170,9 +170,14 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-canvas text-foreground;
-  }
-  html {
-    @apply font-sans;
+    /* font-sans belongs here, not on <html>: --font-geist (and the
+       other font variables) are only declared via the classes
+       next/font puts on <body> in layout.tsx. A custom property
+       defined on an element is invisible to that element's own
+       ancestors, so font-sans on <html> resolved var(--font-geist) to
+       nothing and silently fell back to the browser's serif default -
+       on every page, since Step 1, caught only by an actual rendered
+       screenshot, not by reading the source. */
+    @apply bg-canvas font-sans text-foreground;
   }
 }
