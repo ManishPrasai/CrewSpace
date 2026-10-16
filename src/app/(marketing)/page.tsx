@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { Avatar } from "@/components/app/Avatar";
 import { BrandMark } from "@/components/app/BrandMark";
 import { Button } from "@/components/ui/button";
@@ -7,21 +7,86 @@ import { Button } from "@/components/ui/button";
 const CHECK = <CheckIcon className="size-4 shrink-0 text-brand-ink" aria-hidden="true" />;
 const DASH = <span className="text-muted-foreground">—</span>;
 
+// Illustrative only - static marketing mockups of the real forms, not
+// live controls (handoff: "running in three steps" preview panels,
+// 03-components.md's own distinction between demonstration and
+// product). Not <input>/<button> elements, so they're never
+// keyboard-focusable controls that imply functionality they don't have.
+function Step1Preview() {
+  return (
+    <div className="flex h-[210px] flex-col justify-center gap-2.5 rounded-xl border border-border-subtle bg-muted/60 p-5.5">
+      <span className="text-[12.5px] font-medium">Workspace name</span>
+      <div className="flex h-[38px] items-center rounded-[9px] border border-input-hover bg-background px-3 text-[14px]">
+        Halden &amp; Co.
+      </div>
+      <div className="flex h-[38px] items-center overflow-hidden rounded-[9px] border border-input-hover bg-background font-mono text-[12.5px]">
+        <span className="flex h-full items-center border-r border-border-subtle bg-muted/60 px-2.5 text-muted-foreground">
+          crewspace.app/w/
+        </span>
+        <span className="px-2.5">halden-co</span>
+      </div>
+    </div>
+  );
+}
+
+function Step2Preview() {
+  return (
+    <div className="flex h-[210px] flex-col justify-center gap-2.5 rounded-xl border border-border-subtle bg-muted/60 p-5.5">
+      <div className="flex gap-1.5">
+        <div className="flex h-[38px] flex-1 items-center rounded-[9px] border border-brand bg-background px-3 text-[14px] ring-[3px] ring-brand-soft">
+          lena@halden.co
+        </div>
+        <div className="flex h-[38px] items-center gap-1.5 rounded-[9px] border border-input-hover bg-background px-2.5 text-[13.5px]">
+          Member
+          <ChevronDownIcon className="size-3 text-muted-foreground" />
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-[12.5px] text-muted-foreground">1 seat left on Free</span>
+        <span className="flex h-[34px] items-center rounded-[9px] bg-primary px-3.5 text-[13px] font-medium text-primary-foreground">
+          Send invite
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Step3Preview() {
+  return (
+    <div className="flex h-[210px] flex-col items-center justify-center rounded-xl border border-border-subtle bg-muted/60 p-5.5">
+      <div className="flex w-full flex-col rounded-[10px] border border-input-hover bg-background">
+        <span className="px-3 pt-2.5 pb-0.5 text-[14px] font-semibold">Office closed Friday</span>
+        <span className="px-3 pb-3 text-[13px] leading-[1.5] text-muted-foreground">
+          We&rsquo;re closing for the offsite debrief. Move Friday calls to…
+        </span>
+        <div className="flex justify-end border-t border-border-subtle p-1.5">
+          <span className="flex h-7 items-center rounded-[7px] bg-primary px-2.5 text-[12.5px] font-medium text-primary-foreground">
+            Post
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const STEPS = [
   {
     n: "01",
     title: "Create a workspace",
     body: "Give it a name and a short URL. You become its owner.",
+    preview: <Step1Preview />,
   },
   {
     n: "02",
     title: "Invite your crew",
     body: "Invite by email with the role already chosen. You can resend or revoke until they accept.",
+    preview: <Step2Preview />,
   },
   {
     n: "03",
     title: "Post the official word",
     body: "Owners and admins post. Everyone reads the same feed, newest first.",
+    preview: <Step3Preview />,
   },
 ];
 
@@ -300,8 +365,10 @@ export default function MarketingPage() {
         <div className="flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-x-6">
           <span className="font-mono text-[12px] text-muted-foreground lg:col-span-2 lg:pt-3.5">What it is</span>
           <p className="text-[28px] leading-[1.15] font-medium tracking-[-0.03em] text-foreground lg:col-span-9 lg:text-[42px] lg:leading-[1.08] xl:text-[56px]">
-            <span className="text-[#A3A19B]">Crewspace isn&rsquo;t chat, and it isn&rsquo;t a project tool. It&rsquo;s</span>{" "}
-            one feed <span className="text-[#A3A19B]">and</span>{" "}
+            <span className="text-muted-foreground">
+              Crewspace isn&rsquo;t chat, and it isn&rsquo;t a project tool. It&rsquo;s
+            </span>{" "}
+            one feed <span className="text-muted-foreground">and</span>{" "}
             <span className="font-accent font-normal italic tracking-[-0.01em] text-brand-ink">
               the people allowed to read it.
             </span>
@@ -322,9 +389,7 @@ export default function MarketingPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n} className="flex flex-col gap-0 rounded-[20px] border border-border-subtle p-2.5">
-                <div className="flex h-[210px] items-center justify-center rounded-xl border border-border-subtle bg-muted/60 p-5.5 text-muted-foreground">
-                  <span className="font-mono text-[12px]">UI preview</span>
-                </div>
+                {s.preview}
                 <div className="flex flex-col gap-1.5 px-3.5 pt-5 pb-3.5">
                   <span className="font-mono text-[12px] text-brand-ink">{s.n}</span>
                   <span className="text-[19px] font-semibold tracking-[-0.02em]">{s.title}</span>

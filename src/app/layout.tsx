@@ -49,6 +49,13 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
+        // A browser extension (ColorZilla's `cz-shortcut-listen` is the
+        // specific one seen) injects an attribute onto <body> before
+        // React hydrates - React's own hydration-mismatch docs name
+        // this exact case. suppressHydrationWarning on this one element
+        // silences that false positive without hiding real mismatches
+        // elsewhere in the tree.
+        suppressHydrationWarning
       >
         <ServiceWorkerRegister />
         <Toaster>
