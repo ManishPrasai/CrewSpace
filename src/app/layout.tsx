@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { NoticeToast } from "@/components/app/NoticeToast";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { Toaster } from "@/components/ui/toast";
-import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const geist = Geist({
@@ -42,19 +41,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // THEME_SCRIPT runs synchronously in <head>, before the browser paints
-  // anything, so there's no flash regardless of what the server rendered -
-  // deliberately *not* reading the theme cookie server-side here, since
-  // that would force every route (including the static marketing page)
-  // dynamic for a flash the blocking script already prevents on its own.
-  // Appearance is frontend-only by design (05-dependencies.md) - a
-  // visitor with JS disabled always sees the light default, same as any
-  // other JS-only enhancement in this app.
+  // Dark mode removed per the user's instruction (2026-10-16) - no theme
+  // script, nothing ever adds the `.dark` class, the site is always
+  // light. src/lib/theme.ts and globals.css's `.dark` tokens are left in
+  // place, unused, in case a real light/dark toggle is asked for later.
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
+    <html lang="en">
       <body
         className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
       >
