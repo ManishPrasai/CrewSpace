@@ -141,11 +141,13 @@ export async function updatePassword(
     return err("UNAUTHENTICATED", "Your reset link has expired. Please request a new one.");
   }
 
-  // "/" is the public marketing page - same bug class as the login
-  // redirect fixed earlier this session. A user who just set a password
-  // is authenticated and belongs in the app, not back on the logged-out
-  // landing page.
-  redirect("/workspaces");
+  // This form serves two entry points: the genuine forgot-password email
+  // flow (no `next`, falls back to getSafeRedirect's default /workspaces
+  // - a user who just set a password belongs in the app, not the
+  // logged-out landing page) and a link from Account Settings (`next`
+  // set to the settings page, so the user lands back where they started
+  // instead of being disoriented by a jump to the workspace picker).
+  redirect(`${getSafeRedirect(formData.get("next")?.toString())}?notice=saved`);
 }
 
 // Account -> Profile (handoff/05-dependencies.md D1): profiles' RLS
