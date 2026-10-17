@@ -70,7 +70,7 @@ export function AppSidebar({
       {showSeatCard && (
         <div className="mt-2 flex flex-col gap-2 rounded-lg border border-border-subtle bg-background p-3">
           <p className="text-[13px] font-medium">{seatsUsed} / 5 seats used</p>
-          <Link href={`/w/${current.slug}/billing`} className="text-[13px] text-brand-ink hover:underline">
+          <Link href={`/w/${current.slug}/billing`} className="text-[13px] text-brand-ink underline">
             Upgrade to Pro
           </Link>
         </div>

@@ -18,7 +18,7 @@ export default async function LoginPage({
       <LoginForm next={next} defaultEmail={email} />
       <p className="mt-5 text-center text-[13.5px] text-muted-foreground">
         Don&apos;t have an account?{" "}
-        <Link href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"} className="text-brand-ink hover:underline">
+        <Link href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"} className="text-brand-ink underline">
           Sign up
         </Link>
       </p>

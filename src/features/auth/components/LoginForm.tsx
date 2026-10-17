@@ -25,11 +25,11 @@ export function LoginForm({ next, defaultEmail }: { next?: string; defaultEmail?
             Password
           </label>
           {/* Link only (handoff/04-routes.md: new on /login) - /reset-password already exists. */}
-          <Link href="/reset-password" className="text-[13px] text-brand-ink hover:underline">
+          <Link href="/reset-password" className="text-[13px] text-brand-ink underline">
             Forgot password?
           </Link>
         </div>
-        <PasswordInput name="password" autoComplete="current-password" required />
+        <PasswordInput id="password" name="password" autoComplete="current-password" required />
       </div>
       {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
       <SubmitButton pendingLabel="Logging in..." className="mt-1">
