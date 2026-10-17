@@ -1,6 +1,8 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { DialogClose } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
@@ -11,10 +13,14 @@ import { createInvitation } from "../actions";
 export function InviteMemberForm({
   workspaceId,
   slug,
+  seatsLeft,
   onSent,
 }: {
   workspaceId: string;
   slug: string;
+  /** Free-plan seats remaining (handoff S8's "N seat(s) left on Free"
+      hint) - omitted on Pro, where there's no seat cap to show. */
+  seatsLeft?: number;
   onSent?: () => void;
 }) {
   const [state, formAction] = useActionState(createInvitation, null);
@@ -42,7 +48,19 @@ export function InviteMemberForm({
         </NativeSelect>
       </Field>
       {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
-      <SubmitButton pendingLabel="Sending...">Send invite</SubmitButton>
+      <div className="flex items-center justify-between gap-3">
+        {seatsLeft !== undefined ? (
+          <p className="text-[12.5px] text-muted-foreground">
+            {seatsLeft} seat{seatsLeft === 1 ? "" : "s"} left on Free
+          </p>
+        ) : (
+          <span />
+        )}
+        <div className="flex gap-2">
+          <DialogClose render={<Button type="button" variant="outline" />}>Cancel</DialogClose>
+          <SubmitButton pendingLabel="Sending...">Send invite</SubmitButton>
+        </div>
+      </div>
     </form>
   );
 }

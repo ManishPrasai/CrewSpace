@@ -52,7 +52,14 @@ export default async function MembersPage({
               People with access to {workspace.name} and their roles.
             </p>
           </div>
-          {canInvite && <InviteDialog workspaceId={workspace.id} slug={slug} />}
+          {canInvite && (
+            <InviteDialog
+              workspaceId={workspace.id}
+              workspaceName={workspace.name}
+              slug={slug}
+              seatsLeft={billing.plan === "free" ? Math.max(0, 5 - billing.seatsUsed) : undefined}
+            />
+          )}
         </div>
 
         {billing.plan === "free" && (

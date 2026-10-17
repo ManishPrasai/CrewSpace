@@ -15,7 +15,17 @@ import { toast } from "@/components/ui/toast";
 import { InviteMemberForm } from "./InviteMemberForm";
 
 // handoff/03-components.md: the existing InviteMemberForm inside a Dialog.
-export function InviteDialog({ workspaceId, slug }: { workspaceId: string; slug: string }) {
+export function InviteDialog({
+  workspaceId,
+  workspaceName,
+  slug,
+  seatsLeft,
+}: {
+  workspaceId: string;
+  workspaceName: string;
+  slug: string;
+  seatsLeft?: number;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,12 +36,13 @@ export function InviteDialog({ workspaceId, slug }: { workspaceId: string; slug:
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Invite someone</DialogTitle>
-          <DialogDescription>They&rsquo;ll get an email with a link to join.</DialogDescription>
+          <DialogTitle>Invite people</DialogTitle>
+          <DialogDescription>They&rsquo;ll get an email with a link to join {workspaceName}.</DialogDescription>
         </DialogHeader>
         <InviteMemberForm
           workspaceId={workspaceId}
           slug={slug}
+          seatsLeft={seatsLeft}
           onSent={() => {
             setOpen(false);
             toast.add({ title: "Invitation sent", type: "success" });
