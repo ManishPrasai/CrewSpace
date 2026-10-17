@@ -156,9 +156,9 @@ export default async function WorkspaceSettingsPage({
             <h2 className="text-[15px] font-semibold">Password</h2>
             <div className="rounded-xl border border-border-subtle">
               <div className="grid grid-cols-[180px_minmax(0,1fr)] items-center gap-5 p-4">
-                <div className="flex flex-col gap-0.5">
+                <div className="flex min-w-0 flex-col gap-0.5">
                   <span className="text-[14px] font-medium">Password</span>
-                  <span className="text-[12.5px] text-muted-foreground">{profile?.email}</span>
+                  <span className="truncate text-[12.5px] text-muted-foreground">{profile?.email}</span>
                 </div>
                 <Link
                   href={`/reset-password/update?next=${encodeURIComponent(`/w/${slug}/settings`)}`}

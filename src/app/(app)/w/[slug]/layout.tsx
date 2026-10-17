@@ -52,7 +52,7 @@ export default async function WorkspaceLayout({
       </a>
       {/* Mobile top bar (<768) - no dedicated component, just this one spot. */}
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4 md:hidden">
-        <WorkspaceSwitcher current={workspace} workspaces={workspaces} compact />
+        <WorkspaceSwitcher current={workspace} workspaces={workspaces} />
         <AccountMenu user={user} slug={slug} compact />
       </div>
 

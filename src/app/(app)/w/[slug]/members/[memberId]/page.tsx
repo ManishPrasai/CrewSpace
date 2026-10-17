@@ -73,10 +73,10 @@ export default async function MemberDetailsPage({
           Back to members
         </Link>
 
-        <div className="flex items-center gap-3.5">
+        <div className="flex min-w-0 items-center gap-3.5">
           <Avatar id={member.userId} name={member.fullName} size={48} />
-          <div className="flex flex-col gap-1">
-            <span className="text-[17px] font-semibold tracking-[-0.015em]">{member.fullName ?? "Unnamed"}</span>
+          <div className="flex min-w-0 flex-col gap-1">
+            <span className="truncate text-[17px] font-semibold tracking-[-0.015em]">{member.fullName ?? "Unnamed"}</span>
             <RoleBadge role={member.role} />
           </div>
         </div>
