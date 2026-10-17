@@ -29,6 +29,19 @@ function MemberRowSkeleton() {
   )
 }
 
+function WorkspaceCardSkeleton() {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-border-subtle p-4">
+      <Skeleton className="size-10 rounded-md" />
+      <div className="flex flex-col gap-1.5">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-3 w-20" />
+      </div>
+      <Skeleton className="ml-auto h-5 w-14 rounded-full" />
+    </div>
+  )
+}
+
 function PlanCardSkeleton() {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-border p-6">
@@ -39,4 +52,4 @@ function PlanCardSkeleton() {
   )
 }
 
-export { Skeleton, PostSkeleton, MemberRowSkeleton, PlanCardSkeleton }
+export { Skeleton, PostSkeleton, MemberRowSkeleton, WorkspaceCardSkeleton, PlanCardSkeleton }

@@ -1,37 +1,26 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
+import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { createWorkspace } from "../actions";
 
 export function CreateWorkspaceForm() {
-  const [state, formAction, pending] = useActionState(createWorkspace, null);
+  const [state, formAction] = useActionState(createWorkspace, null);
   const fieldErrors = state && !state.ok ? state.error.fieldErrors : undefined;
 
   return (
     <form action={formAction} className="flex flex-col gap-3">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="name">Workspace name</label>
-        <Input id="name" name="name" autoComplete="off" required />
-        {fieldErrors?.name && <p role="alert">{fieldErrors.name[0]}</p>}
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="slug">URL</label>
-        <Input
-          id="slug"
-          name="slug"
-          autoComplete="off"
-          placeholder="bhadrapur-fc"
-          pattern="[a-z0-9]+(-[a-z0-9]+)*"
-          required
-        />
-        {fieldErrors?.slug && <p role="alert">{fieldErrors.slug[0]}</p>}
-      </div>
-      {state && !state.ok && !fieldErrors && <p role="alert">{state.error.message}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Creating..." : "Create workspace"}
-      </Button>
+      <Field label="Workspace name" htmlFor="name" error={fieldErrors?.name?.[0]}>
+        <Input name="name" autoComplete="off" required />
+      </Field>
+      <Field label="URL" htmlFor="slug" hint="Lowercase letters, numbers and hyphens." error={fieldErrors?.slug?.[0]}>
+        <Input name="slug" autoComplete="off" placeholder="bhadrapur-fc" pattern="[a-z0-9]+(-[a-z0-9]+)*" required />
+      </Field>
+      {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
+      <SubmitButton pendingLabel="Creating...">Create workspace</SubmitButton>
     </form>
   );
 }
