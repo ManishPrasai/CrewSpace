@@ -8,7 +8,12 @@ export function AuthCard({
   description,
   children,
 }: {
-  title: string;
+  // Optional: a few flows (e.g. signup's post-submit "Check your inbox"
+  // swap, handoff/08-authentication.md F7) need the title itself to
+  // change based on client-side form state, which a Server Component
+  // page can't know - those pass no title here and render their own
+  // heading (matching this same h1/description styling) as children.
+  title?: string;
   description?: string;
   children: React.ReactNode;
 }) {
@@ -19,10 +24,12 @@ export function AuthCard({
         <span className="text-[15px] font-semibold tracking-[-0.02em]">Crewspace</span>
       </Link>
       <div className="w-full max-w-[400px] rounded-2xl border border-border bg-background p-6 shadow-raised sm:p-8">
-        <div className="mb-6 flex flex-col gap-1.5">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{title}</h1>
-          {description && <p className="text-[14px] text-muted-foreground">{description}</p>}
-        </div>
+        {title && (
+          <div className="mb-6 flex flex-col gap-1.5">
+            <h1 className="text-xl font-semibold tracking-[-0.02em]">{title}</h1>
+            {description && <p className="text-[14px] text-muted-foreground">{description}</p>}
+          </div>
+        )}
         {children}
       </div>
     </main>
