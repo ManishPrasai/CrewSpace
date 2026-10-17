@@ -51,7 +51,7 @@ If a request conflicts with these docs, STOP and ask. Do not silently deviate.
 ## Security rules (non-negotiable)
 - Tenant isolation is enforced by Postgres RLS. Never rely on UI checks alone.
 - Every table in the public schema has RLS enabled. New tables need policies AND tests.
-- The service role key is ONLY used in: Stripe webhook handler, push sender, and invitation email flow. Never import `lib/supabase/admin.ts` anywhere else.
+- The service role key is ONLY used in: Stripe webhook handler and push sender. Never import `lib/supabase/admin.ts` anywhere else. (The invitation email flow uses the normal RLS-scoped client, not the service role - it doesn't need to bypass RLS.)
 - Never expose secrets to the client. Only `NEXT_PUBLIC_*` env vars may reach the browser.
 - Validate all input with Zod at the boundary (server actions, route handlers).
 - Verify Stripe webhook signatures. Process each Stripe event id only once.
