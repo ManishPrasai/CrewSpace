@@ -164,3 +164,44 @@ Rather than add a second new tool to recover PWA auditing, used what Chrome itse
 Accessibility stays on real Lighthouse CLI (`scripts/lighthouse.mjs`, `npm run test:lighthouse`), run against `/` and `/login` - the two unauthenticated pages. Authenticated routes get accessibility coverage from axe-core instead (inside sessions that are already logged in, via the E2E suite), since driving Lighthouse CLI against an authenticated route means minting and passing a session cookie through `--extra-headers` for what would only be a one-off spot check.
 
 **One real bug found by this run, fixed**: `/login` scored 96/100, flagged by Lighthouse's `target-size` audit - the password-visibility "Show"/"Hide" toggle button in `PasswordInput.tsx` had a clickable area of only 31.6×16px, under WCAG 2.5.8's 24×24px minimum target size. Fixed by adding padding with an equal negative margin (`p-2 -m-2`) to grow the hit target without shifting its visual position or footprint - confirmed via a direct bounding-box measurement (47.6×32px after the fix) and a screenshot showing no visual regression. This is a shared component used by `LoginForm`, `SignUpForm`, and `UpdatePasswordForm` alike, so the fix applies everywhere the toggle appears, not just `/login`. Both pages score 100/100 after the fix.
+
+## ADR-025: Day 9 frame-by-frame visual comparison pass - findings and fixes
+
+Full exhaustive pass against `handoff/06-accessibility-and-qa.md`'s visual-QA checklist, items 19-28, per the scope clarification agreed with the user beforehand: item 19 (6-breakpoint responsive sweep) and item 28 (frame match) are two independently-exhaustive checks, not a 38-frame×6-breakpoint matrix the doc never asks for. Component-level rules (20-23, 25-27) were checked once against the actual shared components; items 24 (truncation) and 28 (frame match) were delegated to 6 parallel agents by route-group, each comparing live screenshots against the real design frames (rendered directly via Playwright, not guessed from raw markup) - synthesized here by root cause, not by which agent reported them.
+
+### Component-level findings (checked once, apply everywhere)
+
+- **Item 20 (concentric radii)**: correct. `--radius-item: 7px` through `--radius-sheet: 28px` in `globals.css`'s `@theme inline` block match the spec's own "panel 14 → inset 12 → row 10 → item 7" sequence exactly.
+- **Item 21 (teal restricted to mark/Owner badge/focus rings/links)**: mostly correct (`--primary: #1A1A19`, confirmed ink not teal, on every button). Two ambiguous exceptions found, not fixed: `Tabs`' active-indicator underline and `PlanCompare`'s Pro-plan badge/checkmarks both use raw `bg-brand`/`text-brand` outside the documented allow-list. Plausibly intentional (active-state and premium-tier-differentiation are both extremely common, reasonable extensions of "teal means active/notable") rather than drift - flagged as a judgment call for the user to confirm, not unilaterally changed given both are shared components used in multiple places.
+- **Item 22 (no card around feed posts, dividers use `--border-subtle`)**: correct, verified directly in `AnnouncementItem.tsx` and `FeedDayDivider.tsx`.
+- **Item 23 (marketing serif only on `/`, once per headline)**: correct. `font-accent` greps to exactly one file, 4 uses, each in its own distinct display-scale text block, none doubled up.
+- **Item 25 (dark mode token-only colors)**: moot - dark mode was removed from the app entirely earlier this session (user's explicit instruction), so there's no dark-mode surface to audit. The leftover `.dark { ... }` CSS block is unused but deliberately left in place in case dark mode returns later - not touched.
+- **Item 26 (skeleton CLS < 0.05)**: not independently re-measured this pass (would need a dedicated Lighthouse performance run per loading state); trusted the existing code-level design intent (`skeleton.tsx`'s own comment: "matches the final layout (no CLS)") rather than re-verify from scratch given the scope already covered. Flagged as not independently confirmed, not claimed as verified.
+- **Item 27 (icons 16px at 1.4-1.5 stroke, `currentColor`)**: **real, systemic bug found and fixed** - 18 of 20 files importing `lucide-react` never set `strokeWidth`, so those icons rendered at lucide's hardcoded default of 2 instead of 1.4-1.5, a visibly heavier icon weight across most of the app. Fixed with one CSS rule (`svg { stroke-width: 1.5 }` in `globals.css`) rather than 18 scattered edits - a CSS declaration beats an SVG's own presentation attribute on the same element. Verified this doesn't affect `BrandMark` (the one non-lucide SVG), whose stroke-width is set as an attribute directly on its child `<rect>`/`<path>` elements, which keep their own attribute over an inherited value from the `<svg>` root.
+
+### Per-screen findings, by root cause (items 24 + 28)
+
+Fixed this pass:
+1. **Signup success state didn't match F7** - missing title swap, echoed-email box, and footer links (just a bare status line). Fixed: `SignUpForm.tsx`/`AuthCard.tsx` now support a client-driven title swap.
+2. **`/workspaces` had no shell chrome at all vs W1/W2** - the single biggest gap found, an entire route the V2 redesign never reached. Fixed: minimal top bar + white panel + grouped workspace list + illustrated empty state.
+3. **Shared sidebar account widget missing email + chevron vs D1/D4/D5**, and the account dropdown missing an identity header. Fixed via `AccountMenu`'s new `expanded` variant.
+4. **Invite dialog copy/layout mismatch vs S8** - title, description, missing seat-count hint, missing Cancel button. Fixed.
+5. **Member detail page name had no truncate safeguard**; **Settings' password-section email had no truncate** (wraps instead of ellipsizing). Both fixed.
+6. **Mobile top bar's workspace switcher wrongly used `compact`** (meant for the tablet rail), losing its name pill on phones. Fixed.
+7. A **dead `#account` anchor** in `AccountMenu`'s "Account settings" link, left over from an earlier pass that split Settings into `#profile`/`#password` - caught and fixed while touching this file.
+
+Confirmed already correct/already-documented, not re-litigated:
+- Members list/detail structural choices (email/Joined column removal, member-detail-as-page-not-dialog) - both sanctioned product decisions already recorded in `docs/handoff.md`.
+- Settings/Billing page structure, Danger Zone states, truncation - all verified live against D4/D5/D6/S11/S13, matches closely.
+- Zero horizontal overflow confirmed empirically across all 6 routes at both 390px and 360px (the QA doc's one explicit hard requirement).
+- Settings' mobile sub-nav squeeze below ~768px - already tracked in ADR-021, re-confirmed present, not re-described as new.
+
+Explicitly deferred, not built this pass (flagged, not silently dropped) - each is a genuine design-pattern gap, not a quick fix, and building fresh mobile-specific UI components was judged out of proportion for a QA pass:
+- **M2**: mobile workspace switcher should be a bottom sheet; currently the same floating dropdown as desktop.
+- **M4**: mobile announcement composer should go full-screen; currently the same inline `<details>` expansion as desktop.
+- **M6**: mobile Billing should replace the bottom tab bar with a sticky "Upgrade to Pro" action bar; currently the tab bar stays and the button is inline in the card.
+- **S3**: the composer's expanded state should be borderless/placeholder-driven with a "Visible to all N members" meta line; currently a conventional labeled form.
+- **S4**: inline post editing should keep the author avatar/name/timestamp visible above the edit fields; currently they're replaced entirely by the fields.
+- **D1**: a seat-usage box above the sidebar's account control, a sidebar-collapse icon, and a member-count badge on the Members nav item all appear in the frame but not live - unclear if deliberately hidden until near a seat limit or simply unbuilt.
+
+Verified throughout: `npm run typecheck && npm run lint && npm test` (38/38) and `npm run test:e2e` (3/3, run multiple times for stability) after every commit; a full `npm run build` at the end, clean. Every live check used real authenticated Playwright sessions and, where the design frames themselves were needed, real screenshots of the actual `.dc.html` files rendered in a browser - not assumptions from reading raw markup.

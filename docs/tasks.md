@@ -80,7 +80,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] AI security review (see prompts.md) and fix findings
 - [x] Lighthouse check: PWA installable, accessibility
 - [ ] Screen-reader smoke test (VoiceOver/NVDA) on the feed, members and dialogs - genuinely not done yet, needs a real screen reader (06-accessibility-and-qa.md item 17)
-- [ ] Frame-by-frame visual comparison against L2/D1-D6/S1-S15/A1-A10/W1-W2/M1-M4 at 1440/1280/1024/768/390/360 - spot-checked during each redesign step, not run as one exhaustive pass (06-accessibility-and-qa.md item 28)
+- [x] Frame-by-frame visual comparison - full exhaustive pass against L2/D1-D6/S1-S15/A1-A10 (superseded by C v3 Authentication)/W1-W2/M1-M9 at 1440/1280/1024/768/390/360, see ADR-025
 
 ## Day 10 - Ship
 **UN-PAUSED** - see Day 9.
