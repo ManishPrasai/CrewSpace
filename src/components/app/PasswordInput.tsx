@@ -53,7 +53,7 @@ export function PasswordInput({
           aria-pressed={visible}
           aria-controls={inputId}
           onClick={() => setVisible((v) => !v)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground hover:text-foreground"
+          className="absolute top-1/2 right-1 -m-2 -translate-y-1/2 p-2 text-xs font-medium text-muted-foreground hover:text-foreground"
         >
           {visible ? "Hide" : "Show"}
         </button>
