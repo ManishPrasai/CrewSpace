@@ -76,9 +76,8 @@ export function AppSidebar({
         </div>
       )}
 
-      <div className="mt-auto flex items-center gap-2 px-1 pt-2">
-        <AccountMenu user={user} slug={current.slug} />
-        <span className="truncate text-[13px] text-muted-foreground">{user.name ?? user.email}</span>
+      <div className="mt-auto flex items-center pt-2">
+        <AccountMenu user={user} slug={current.slug} expanded />
       </div>
     </nav>
   );
