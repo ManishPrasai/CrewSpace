@@ -13,9 +13,11 @@ export function PanelHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex h-[52px] shrink-0 items-center justify-between border-b border-border-subtle pl-6 pr-5", className)}>
-      <div className="flex items-center gap-1.5 text-[13.5px] text-muted-foreground">{breadcrumb}</div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+    <div className={cn("flex h-[52px] shrink-0 items-center justify-between gap-3 border-b border-border-subtle pl-6 pr-5", className)}>
+      <div className="flex min-w-0 items-center gap-1.5 overflow-hidden text-[13.5px] whitespace-nowrap text-muted-foreground">
+        {breadcrumb}
+      </div>
+      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
     </div>
   );
 }

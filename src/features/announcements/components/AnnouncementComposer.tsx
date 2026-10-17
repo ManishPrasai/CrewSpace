@@ -88,11 +88,13 @@ export function AnnouncementComposer({
         }}
       >
         <Avatar id={authorId} name={authorName} size={30} />
-        <span className="flex-1 text-[15px] text-placeholder">Share an update with {workspaceName}…</span>
-        <span className="rounded-[5px] border border-border px-1.5 py-px font-mono text-[11px] text-muted-foreground">
+        <span className="min-w-0 flex-1 truncate text-[15px] text-placeholder">
+          Share an update with {workspaceName}…
+        </span>
+        <span className="hidden shrink-0 rounded-[5px] border border-border px-1.5 py-px font-mono text-[11px] text-muted-foreground sm:inline-block">
           N
         </span>
-        <span className="flex h-8 items-center rounded-md bg-primary px-3.5 text-[13.5px] font-medium text-primary-foreground">
+        <span className="flex h-8 shrink-0 items-center whitespace-nowrap rounded-md bg-primary px-3.5 text-[13.5px] font-medium text-primary-foreground">
           New announcement
         </span>
       </summary>

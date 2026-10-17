@@ -44,7 +44,7 @@ export default async function WorkspacePage({
             className="flex items-center gap-2 rounded-full border border-border-subtle px-2.5 py-1 hover:bg-muted"
           >
             <AvatarStack people={members.map((m) => ({ id: m.userId, name: m.fullName }))} max={4} />
-            <span className="text-[12.5px] text-muted-foreground">
+            <span className="hidden text-[12.5px] text-muted-foreground sm:inline">
               {members.length} {members.length === 1 ? "member" : "members"}
             </span>
           </Link>
