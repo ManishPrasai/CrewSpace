@@ -18,11 +18,12 @@ const ACCESS_COPY: Record<"owner" | "admin" | "member", string> = {
   member: "You can view this workspace's settings. Only the owner and admins can make changes.",
 };
 
-// handoff/04-routes.md: a sub-nav with "Workspace" (General/Members/
-// Billing) and "Your account" (Profile/Password). Members and Billing
-// just link to their existing pages - General and "Your account" are
-// the only real content on this route, so the "sub-nav" is anchor
-// links into one scrollable page, not separate routes.
+// handoff/04-routes.md: a sub-nav with "Workspace" (General) and "Your
+// account" (Profile/Password). Members and Billing already have their
+// own routes in the primary sidebar, so this sub-nav doesn't duplicate
+// them with dead-end links to the same pages. General, Profile and
+// Password are the only content on this route, so the "sub-nav" is
+// anchor links into one scrollable page, not separate routes.
 export default async function WorkspaceSettingsPage({
   params,
 }: {
@@ -57,19 +58,13 @@ export default async function WorkspaceSettingsPage({
             <a href="#general" className="rounded-md bg-muted px-2.5 py-1.5 font-medium">
               General
             </a>
-            <Link href={`/w/${slug}/members`} className="rounded-md px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
-              Members
-            </Link>
-            <Link href={`/w/${slug}/billing`} className="rounded-md px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
-              Billing
-            </Link>
           </div>
           <div className="flex flex-col gap-0.5">
             <span className="px-2.5 pb-1.5 text-[12px] font-medium text-muted-foreground">Your account</span>
-            <a href="#account" className="rounded-md px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
+            <a href="#profile" className="rounded-md px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
               Profile
             </a>
-            <a href="#account" className="rounded-md px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
+            <a href="#password" className="rounded-md px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
               Password
             </a>
           </div>
@@ -150,17 +145,23 @@ export default async function WorkspaceSettingsPage({
             </div>
           )}
 
-          <div id="account" className="flex flex-col gap-2.5 border-t border-border-subtle pt-6">
-            <h2 className="text-[15px] font-semibold">Your account</h2>
+          <div id="profile" className="flex flex-col gap-2.5 border-t border-border-subtle pt-6">
+            <h2 className="text-[15px] font-semibold">Profile</h2>
             <div className="rounded-xl border border-border-subtle">
               <UpdateProfileForm fullName={profile?.fullName ?? ""} slug={slug} />
+            </div>
+          </div>
+
+          <div id="password" className="flex flex-col gap-2.5 border-t border-border-subtle pt-6">
+            <h2 className="text-[15px] font-semibold">Password</h2>
+            <div className="rounded-xl border border-border-subtle">
               <div className="grid grid-cols-[180px_minmax(0,1fr)] items-center gap-5 p-4">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[14px] font-medium">Password</span>
                   <span className="text-[12.5px] text-muted-foreground">{profile?.email}</span>
                 </div>
                 <Link
-                  href="/reset-password/update"
+                  href={`/reset-password/update?next=${encodeURIComponent(`/w/${slug}/settings`)}`}
                   className="w-fit rounded-md border border-input px-3 py-1.5 text-[13.5px] font-medium hover:bg-muted"
                 >
                   Change password
