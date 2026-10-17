@@ -78,7 +78,7 @@ Every day that adds or changes a table writes that table's pgTAP tests the same 
 - [x] Playwright: member cannot post announcement
 - [x] Playwright: free plan blocks 6th seat
 - [x] AI security review (see prompts.md) and fix findings
-- [ ] Lighthouse check: PWA installable, accessibility
+- [x] Lighthouse check: PWA installable, accessibility
 - [ ] Screen-reader smoke test (VoiceOver/NVDA) on the feed, members and dialogs - genuinely not done yet, needs a real screen reader (06-accessibility-and-qa.md item 17)
 - [ ] Frame-by-frame visual comparison against L2/D1-D6/S1-S15/A1-A10/W1-W2/M1-M4 at 1440/1280/1024/768/390/360 - spot-checked during each redesign step, not run as one exhaustive pass (06-accessibility-and-qa.md item 28)
 
