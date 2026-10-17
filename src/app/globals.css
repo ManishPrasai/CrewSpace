@@ -169,6 +169,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* handoff/06-accessibility-and-qa.md item 27: icons at 1.4-1.5 stroke.
+     lucide-react (used everywhere except BrandMark) defaults every icon
+     to stroke-width 2 with no global way to change that default short of
+     passing strokeWidth to every single usage - confirmed via a repo
+     grep: 18 of 20 files importing lucide-react never set it. A CSS
+     declaration beats an SVG presentation attribute on the same element,
+     so this overrides lucide's own stroke-width="2" without touching
+     every call site. Safe for BrandMark too: its stroke-width is set as
+     an attribute directly on its <rect>/<path> children, not inherited
+     from its <svg> root, so a child's own attribute still wins there. */
+  svg {
+    stroke-width: 1.5;
+  }
   body {
     /* font-sans belongs here, not on <html>: --font-geist (and the
        other font variables) are only declared via the classes
