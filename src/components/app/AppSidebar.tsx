@@ -37,6 +37,11 @@ export function AppSidebar({
       aria-label="Workspace"
       className="hidden w-[232px] shrink-0 flex-col gap-1 p-3 lg:flex lg:w-[264px]"
     >
+      <div className="flex items-center gap-2 px-1 pt-1 pb-3 font-semibold tracking-[-0.035em] text-foreground">
+        <BrandMark variant="full" size={20} />
+        Crewspace
+      </div>
+
       <div className="mb-2">
         <WorkspaceSwitcher current={current} workspaces={workspaces} />
       </div>
