@@ -24,7 +24,10 @@ export function AccountMenu({
   expanded = false,
 }: {
   user: { name: string | null; email: string | null };
-  slug: string;
+  /** Omit on routes with no current workspace (e.g. /workspaces) -
+      "Account settings" has nowhere workspace-scoped to go, so it's
+      hidden rather than pointing at a guessed/stale workspace. */
+  slug?: string;
   compact?: boolean;
   /** D1/D4/D5's sidebar account control: full name + email + chevron,
       not just the avatar - the whole row is the trigger. */
@@ -40,10 +43,10 @@ export function AccountMenu({
             <button
               type="button"
               aria-label="Account menu"
-              className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1 text-left hover:bg-background/60"
+              className="flex min-w-0 max-w-full items-center gap-2 rounded-md px-1 py-1 text-left hover:bg-background/60"
             >
               <Avatar id={user.email ?? "unknown"} name={user.name} size={30} />
-              <span className="flex min-w-0 flex-1 flex-col">
+              <span className="flex min-w-0 flex-col">
                 <span className="truncate text-[14px] font-medium text-foreground">{user.name ?? user.email}</span>
                 {user.email && <span className="truncate text-[12.5px] text-muted-foreground">{user.email}</span>}
               </span>
@@ -65,10 +68,12 @@ export function AccountMenu({
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push(`/w/${slug}/settings#profile`)}>
-          <UserCircle className="size-4" strokeWidth={1.5} />
-          Account settings
-        </DropdownMenuItem>
+        {slug && (
+          <DropdownMenuItem onClick={() => router.push(`/w/${slug}/settings#profile`)}>
+            <UserCircle className="size-4" strokeWidth={1.5} />
+            Account settings
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => router.push("/workspaces")}>All workspaces</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/workspaces#create")}>
           <Plus className="size-4" strokeWidth={1.5} />
