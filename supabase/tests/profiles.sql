@@ -1,5 +1,5 @@
 begin;
-select plan(7);
+select plan(10);
 
 select tests.create_supabase_user('owner@example.com') as owner_id \gset
 select tests.create_supabase_user('other@example.com') as other_id \gset
@@ -51,5 +51,39 @@ select is(
 );
 
 reset role;
+
+-- ADR-026: OAuth providers (Google/Microsoft) populate "name"/"picture"
+-- in raw_user_meta_data, not "full_name"/"avatar_url" - the trigger
+-- must fall back to those keys too.
+select tests.create_supabase_user(
+  'oauth@example.com',
+  '{"name": "OAuth Person", "picture": "https://example.com/avatar.jpg"}'::jsonb
+) as oauth_id \gset
+
+select is(
+  (select full_name from public.profiles where id = :'oauth_id'::uuid),
+  'OAuth Person',
+  'trigger falls back to raw_user_meta_data.name when full_name is absent'
+);
+
+select is(
+  (select avatar_url from public.profiles where id = :'oauth_id'::uuid),
+  'https://example.com/avatar.jpg',
+  'trigger populates avatar_url from raw_user_meta_data.picture'
+);
+
+-- A non-https avatar URL must be dropped, not fail the signup insert
+-- (matches the column's own check constraint).
+select tests.create_supabase_user(
+  'badavatar@example.com',
+  '{"name": "Bad Avatar", "picture": "http://insecure.example.com/x.jpg"}'::jsonb
+) as bad_avatar_id \gset
+
+select is(
+  (select avatar_url from public.profiles where id = :'bad_avatar_id'::uuid),
+  null,
+  'trigger nulls out a non-https avatar_url instead of failing the insert'
+);
+
 select finish();
 rollback;

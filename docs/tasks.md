@@ -104,3 +104,9 @@ Frontend-only rebuild per the claude.ai/design handoff package. Full plan, audit
 - [x] 10. Dark mode + Appearance toggle (cookie + blocking inline script, no SSR cookie read - see ADR-013), plus a targeted fix pass against `06-accessibility-and-qa.md` (skip link, feed `ol>li>article`/`h2`/`time[datetime]`, reduced-motion `transition-duration`); the full 24-test matrix, Lighthouse and screen-reader passes are Day 9's job now (see ADR-014)
 
 **V2 redesign complete (2026-10-15).** All 10 steps shipped, committed, pushed. See ADR-011 through ADR-014.
+
+## OAuth login - Google/Microsoft/Apple (inserted after Day 9, before Day 10 - see ADR-026)
+Reverses ADR-008/requirements.md's original "out of scope" call, per explicit user request.
+- [x] `signInWithProvider` server action, `OAuthButtons.tsx`, wired into Login/Signup above the email form, `/auth/callback` error-code mapping, `handle_new_user()` trigger updated for OAuth metadata keys, `NEXT_PUBLIC_AUTH_PROVIDERS` feature flag (unset today - zero behavior change until configured)
+- [ ] **Needs the user**: real Google Cloud / Microsoft Entra / Apple Developer (paid) OAuth app credentials - nothing works end-to-end until these exist. See ADR-026 for exactly what to set up and where it goes.
+- [ ] Account-linking UI (design frame F10) - explicitly deferred, not built this pass (design's own instruction: "only if enabled and approved")

@@ -8,13 +8,22 @@ import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { signUp } from "../actions";
+import { OAuthButtons } from "./OAuthButtons";
 import type { ActionResult } from "@/lib/result";
 
 // Owns its own title (not AuthCard's) because the post-submit "Check
 // your inbox" swap (handoff/08-authentication.md F7) needs the title
 // itself to change, which a Server Component page can't drive - see
 // AuthCard.tsx's comment on its optional `title` prop.
-export function SignUpForm({ next, defaultEmail }: { next?: string; defaultEmail?: string }) {
+export function SignUpForm({
+  next,
+  defaultEmail,
+  authProviders,
+}: {
+  next?: string;
+  defaultEmail?: string;
+  authProviders?: string;
+}) {
   const submittedEmailRef = useRef(defaultEmail ?? "");
 
   // Wraps signUp (not called separately) so the submitted email is
@@ -70,6 +79,7 @@ export function SignUpForm({ next, defaultEmail }: { next?: string; defaultEmail
         <h1 className="text-xl font-semibold tracking-[-0.02em]">Create your account</h1>
         <p className="text-[14px] text-muted-foreground">Free for workspaces of up to five people.</p>
       </div>
+      <OAuthButtons next={next} authProviders={authProviders} />
       <form action={formAction} className="flex flex-col gap-4">
         {next && <input type="hidden" name="next" value={next} />}
         <Field label="Full name" htmlFor="fullName" error={fieldErrors?.fullName?.[0]}>

@@ -1,5 +1,6 @@
 import { AuthCard } from "@/components/app/AuthCard";
 import { SignUpForm } from "@/features/auth/components/SignUpForm";
+import { clientEnv } from "@/lib/env";
 
 export default async function SignUpPage({
   searchParams,
@@ -10,7 +11,7 @@ export default async function SignUpPage({
 
   return (
     <AuthCard>
-      <SignUpForm next={next} defaultEmail={email} />
+      <SignUpForm next={next} defaultEmail={email} authProviders={clientEnv.NEXT_PUBLIC_AUTH_PROVIDERS} />
     </AuthCard>
   );
 }

@@ -7,6 +7,7 @@ import { getSafeRedirect } from "@/lib/auth/safe-redirect";
 import { err, ok, type ActionResult } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
 import {
+  oauthProviderSchema,
   requestPasswordResetSchema,
   signInSchema,
   signUpSchema,
@@ -85,6 +86,39 @@ export async function signIn(
   }
 
   redirect(getSafeRedirect(formData.get("next")?.toString()));
+}
+
+// ADR-026: a plain <form action={signInWithProvider}> per provider
+// button, same shape as signOut - there's no form state to render back
+// (a successful call always redirects away to the provider's own
+// consent screen before the button's own page re-renders), so this
+// isn't wired through useActionState like the email/password actions.
+// Works without JS, per handoff/08-authentication.md's F0 note.
+export async function signInWithProvider(formData: FormData): Promise<void> {
+  const parsed = oauthProviderSchema.safeParse(formData.get("provider"));
+  if (!parsed.success) {
+    redirect("/login?error=callback_failed");
+  }
+
+  const next = formData.get("next")?.toString();
+  const redirectTo = `${clientEnv.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(getSafeRedirect(next))}`;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: parsed.data,
+    options: { redirectTo },
+  });
+
+  // Supabase/GoTrue itself being unreachable, or provider is still
+  // enabled=false in supabase/config.toml (no real credentials yet,
+  // ADR-026) - either way there's no consent-screen URL to send the
+  // user to.
+  if (error || !data.url) {
+    console.error("signInWithProvider failed", error);
+    redirect("/login?error=provider_unavailable");
+  }
+
+  redirect(data.url);
 }
 
 export async function signOut(formData?: FormData): Promise<void> {

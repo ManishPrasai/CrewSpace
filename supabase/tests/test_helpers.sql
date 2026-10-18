@@ -15,7 +15,7 @@ select ok(
 );
 
 select ok(
-  not has_function_privilege('anon', 'tests.create_supabase_user(text)', 'EXECUTE'),
+  not has_function_privilege('anon', 'tests.create_supabase_user(text, jsonb)', 'EXECUTE'),
   'anon cannot execute tests.create_supabase_user'
 );
 

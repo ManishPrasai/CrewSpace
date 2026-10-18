@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  oauthProviderSchema,
   requestPasswordResetSchema,
   signInSchema,
   signUpSchema,
@@ -95,5 +96,23 @@ describe("updatePasswordSchema", () => {
 
   it("rejects a password under 8 characters", () => {
     expect(updatePasswordSchema.safeParse({ password: "short1" }).success).toBe(false);
+  });
+});
+
+describe("oauthProviderSchema", () => {
+  it.each(["google", "azure", "apple"])("accepts %s", (provider) => {
+    expect(oauthProviderSchema.safeParse(provider).success).toBe(true);
+  });
+
+  it("rejects \"microsoft\" - the provider key is \"azure\", not \"microsoft\"", () => {
+    expect(oauthProviderSchema.safeParse("microsoft").success).toBe(false);
+  });
+
+  it("rejects an arbitrary string", () => {
+    expect(oauthProviderSchema.safeParse("facebook").success).toBe(false);
+  });
+
+  it("rejects a non-string value", () => {
+    expect(oauthProviderSchema.safeParse(null).success).toBe(false);
   });
 });

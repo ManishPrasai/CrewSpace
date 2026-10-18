@@ -19,7 +19,7 @@ Show Upwork clients I can build a production-quality SaaS MVP: secure multi-tena
 A user can belong to many workspaces with a different role in each.
 
 ## Core features (MVP)
-1. **Auth**: email + password sign up with email confirmation, login, logout, password reset.
+1. **Auth**: email + password sign up with email confirmation, login, logout, password reset. Optional Google/Microsoft/Apple OAuth (ADR-026), gated behind `NEXT_PUBLIC_AUTH_PROVIDERS` - no account-linking UI; an email collision with an existing password account just points the user back to the password login.
 2. **Profile**: full name, avatar URL.
 3. **Workspaces**: create workspace (creator becomes Owner), workspace switcher, rename (Owner/Admin), delete (Owner only).
 4. **Members**: list members with roles, change role (rules above), remove member, leave workspace (not allowed for Owner).
@@ -43,7 +43,6 @@ A user can belong to many workspaces with a different role in each.
 
 ## Out of scope (do NOT build)
 - Native mobile app (comes later in the Expo project)
-- OAuth / social login
 - AI features
 - Comments, reactions, file uploads, rich text editor (plain text + line breaks only)
 - Audit logs, analytics dashboards

@@ -344,6 +344,32 @@ skip_nonce_check = false
 # If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
 email_optional = false
 
+# ADR-026: Google and Microsoft (provider key `azure`, not `microsoft`)
+# OAuth, gated client-side by NEXT_PUBLIC_AUTH_PROVIDERS - these stay
+# `enabled = false` until the user supplies real client_id/secret
+# values from their own Google Cloud / Microsoft Entra app
+# registrations; disabled here means GoTrue rejects the request
+# server-side even if a button somehow rendered.
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+redirect_uri = ""
+url = ""
+# Required for local sign in with Google auth (see the apple block's
+# comment above, same underlying GoTrue note).
+skip_nonce_check = true
+email_optional = false
+
+[auth.external.azure]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_AZURE_SECRET)"
+redirect_uri = ""
+url = ""
+skip_nonce_check = false
+email_optional = false
+
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
 # You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
 [auth.web3.solana]
