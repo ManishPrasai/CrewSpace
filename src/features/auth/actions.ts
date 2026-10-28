@@ -13,7 +13,22 @@ import {
   signUpSchema,
   updatePasswordSchema,
   updateProfileSchema,
+  type OAuthProvider,
 } from "./schemas";
+
+// GoTrue doesn't request an email claim by default for any OIDC
+// provider - each one needs it listed explicitly or the token exchange
+// fails with no email on the identity. Azure in particular silently
+// omits it from the default `openid` scope (confirmed against a real
+// authorize URL and Supabase's own Azure guide: "Supabase Auth requires
+// that Azure provide an email address"). Per-provider, not shared,
+// since Google's default scope set already includes email and
+// widening it isn't needed or asked for.
+const OAUTH_SCOPES: Record<OAuthProvider, string | undefined> = {
+  google: undefined,
+  azure: "email",
+  apple: undefined,
+};
 
 export async function signUp(
   _prevState: ActionResult<void> | null,
@@ -106,7 +121,7 @@ export async function signInWithProvider(formData: FormData): Promise<void> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: parsed.data,
-    options: { redirectTo },
+    options: { redirectTo, scopes: OAUTH_SCOPES[parsed.data] },
   });
 
   // Supabase/GoTrue itself being unreachable, or provider is still

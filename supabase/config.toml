@@ -160,13 +160,17 @@ max_indexes = 5
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "http://localhost:3000"
+# Switched to the PC's LAN IP so a phone on the same Wi-Fi can reach
+# auth redirects too, not just localhost - must match .env.local's
+# NEXT_PUBLIC_APP_URL exactly (see that file's own comment).
+site_url = "http://192.168.1.84:3000"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 # Must match NEXT_PUBLIC_APP_URL in .env.example, or emailRedirectTo /
 # resetPasswordForEmail's redirectTo get silently rejected or rewritten.
-additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+# Both kept so the app still works from the PC's own localhost too.
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://192.168.1.84:3000/auth/callback"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to auth.external_url.
@@ -351,10 +355,14 @@ email_optional = false
 # registrations; disabled here means GoTrue rejects the request
 # server-side even if a button somehow rendered.
 [auth.external.google]
-enabled = false
-client_id = ""
+enabled = true
+client_id = "381901123476-khculoju296rmb8rmvvf04bkpdfiafch.apps.googleusercontent.com"
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
-redirect_uri = ""
+# Overridden to the PC's LAN IP (not the default 127.0.0.1) so a phone
+# on the same Wi-Fi can complete the Google OAuth round-trip too - see
+# the identical reasoning on the azure block below. Also works fine
+# from the PC itself (same pattern as NEXT_PUBLIC_APP_URL).
+redirect_uri = "http://192.168.1.84:58321/auth/v1/callback"
 url = ""
 # Required for local sign in with Google auth (see the apple block's
 # comment above, same underlying GoTrue note).
@@ -362,10 +370,14 @@ skip_nonce_check = true
 email_optional = false
 
 [auth.external.azure]
-enabled = false
-client_id = ""
+enabled = true
+client_id = "ef56bdd2-8323-498a-bd32-b609ffd3099e"
 secret = "env(SUPABASE_AUTH_EXTERNAL_AZURE_SECRET)"
-redirect_uri = ""
+# Overridden to "localhost" (not the default 127.0.0.1) because Azure's
+# redirect URI validation requires an exact match, and it only accepted
+# "localhost" or https, not an IP literal - see the Azure app's own
+# Authentication > Web platform redirect URI.
+redirect_uri = "http://localhost:58321/auth/v1/callback"
 url = ""
 skip_nonce_check = false
 email_optional = false
