@@ -76,6 +76,18 @@ export function AnnouncementComposer({
     }
   }
 
+  // Body-specific: plain Enter posts, Shift+Enter inserts a newline -
+  // matches chat-style composers, overriding a plain <textarea>'s
+  // default of Enter always inserting a newline. Scoped to this field
+  // only (not onFormKeyDown) so Title's native Enter-submits behavior
+  // and multi-line editing elsewhere are both unaffected.
+  function onBodyKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  }
+
   const fieldErrors = state && !state.ok ? state.error.fieldErrors : undefined;
 
   return (
@@ -111,7 +123,7 @@ export function AnnouncementComposer({
           <Input ref={titleRef} name="title" required />
         </Field>
         <Field label="Body" htmlFor="body" error={fieldErrors?.body?.[0]}>
-          <Textarea name="body" required minRows={4} />
+          <Textarea name="body" required minRows={4} onKeyDown={onBodyKeyDown} />
         </Field>
         {state && !state.ok && !fieldErrors && <FormAlert tone="error">{state.error.message}</FormAlert>}
         <div className="flex justify-end gap-2">
