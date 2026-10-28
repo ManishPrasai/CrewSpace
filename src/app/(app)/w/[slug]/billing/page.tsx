@@ -45,7 +45,7 @@ export default async function BillingPage({
           </p>
         </div>
 
-        {status === "success" && (
+        {status === "success" && billing.plan === "free" && (
           <div role="status" className="flex items-center gap-2.5 rounded-xl bg-brand-soft px-4 py-3 text-[13.5px] text-brand-ink">
             <Loader2Icon className="size-4 shrink-0 animate-spin" />
             Processing your upgrade. This can take a few seconds.
