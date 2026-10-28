@@ -314,9 +314,9 @@ export default function MarketingPage() {
               </div>
             </div>
             <div className="flex-1 border-l border-border-subtle p-6 sm:p-8">
-              <div className="flex items-center justify-between">
-                <span className="text-[19px] font-semibold tracking-[-0.02em]">Announcements</span>
-                <span className="rounded-md bg-primary px-2.5 py-1.5 text-[12px] font-medium text-primary-foreground">
+              <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-[17px] font-semibold tracking-[-0.02em] sm:text-[19px]">Announcements</span>
+                <span className="whitespace-nowrap rounded-md bg-primary px-2.5 py-1.5 text-[12px] font-medium text-primary-foreground">
                   New announcement
                 </span>
               </div>
@@ -336,7 +336,7 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div className="absolute -right-3 -bottom-5 flex w-[280px] items-center gap-3 rounded-xl bg-foreground p-3.5 text-background shadow-raised sm:-right-6">
+          <div className="relative mt-3 flex w-full items-center gap-3 rounded-xl bg-foreground p-3.5 text-background shadow-raised sm:absolute sm:-right-6 sm:-bottom-5 sm:mt-0 sm:w-[280px]">
             <div className="flex shrink-0">
               <Avatar id="maya-okafor" name="Maya Okafor" size={24} className="-mr-2 ring-2 ring-foreground" />
               <Avatar id="daniel-reyes" name="Daniel Reyes" size={24} className="ring-2 ring-foreground" />
@@ -416,7 +416,8 @@ export default function MarketingPage() {
               something isn&rsquo;t available, Crewspace says who can do it.
             </p>
           </div>
-          <div className="overflow-x-auto rounded-[20px] border border-border bg-background p-2.5 lg:col-span-7 lg:col-start-6">
+          {/* Desktop/tablet: the original fixed-column table, unchanged. */}
+          <div className="hidden overflow-x-auto rounded-[20px] border border-border bg-background p-2.5 md:block lg:col-span-7 lg:col-start-6">
             <div className="min-w-[480px]">
               <div className="grid grid-cols-[minmax(0,1fr)_72px_72px_72px] px-4.5 py-3.5 text-[13px] font-medium text-[#55544F]">
                 <span />
@@ -439,6 +440,41 @@ export default function MarketingPage() {
               </div>
             </div>
           </div>
+
+          {/* Mobile: one compact card per permission, same ROLE_ROWS data -
+              no horizontal scroll, each role's status is both an icon and
+              real text (never icon-only) for screen readers. */}
+          <div className="flex flex-col rounded-[20px] border border-border bg-background md:hidden lg:col-span-7 lg:col-start-6">
+            {ROLE_ROWS.map((row) => (
+              <div key={row.label} className="flex flex-col gap-2.5 border-b border-border-subtle p-4 last:border-b-0">
+                <span className="text-[14px] font-medium">{row.label}</span>
+                <div className="grid grid-cols-3 gap-2">
+                  {(
+                    [
+                      { key: "owner", label: "Owner", allowed: row.owner },
+                      { key: "admin", label: "Admin", allowed: row.admin },
+                      { key: "member", label: "Member", allowed: row.member },
+                    ] as const
+                  ).map((role) => (
+                    <div
+                      key={role.key}
+                      className="flex flex-col items-center gap-1 rounded-lg bg-muted py-2.5"
+                      aria-label={`${role.label}: ${role.allowed ? "Allowed" : "Not allowed"}`}
+                    >
+                      <span className="text-[11px] font-medium text-[#55544F]">{role.label}</span>
+                      {role.allowed ? (
+                        <CheckIcon className="size-3.5 text-brand-ink" aria-hidden="true" />
+                      ) : (
+                        <span className="text-muted-foreground" aria-hidden="true">
+                          —
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -459,12 +495,21 @@ export default function MarketingPage() {
             </div>
             <div className="flex items-center gap-3.5">
               <div className="flex">
-                {["#E7DCCB", "#D3E0E4", "#E0D9E8", "#E1E8DA", "#F2ECE1"].map((c, i) => (
+                {[
+                  { c: "#E7DCCB", initials: "JD" },
+                  { c: "#D3E0E4", initials: "AM" },
+                  { c: "#E0D9E8", initials: "RK" },
+                  { c: "#E1E8DA", initials: "SL" },
+                  { c: "#F2ECE1", initials: "TN" },
+                ].map(({ c, initials }, i) => (
                   <span
                     key={i}
-                    className="-ml-2.5 size-[34px] rounded-full border-2 border-background first:ml-0"
+                    aria-hidden="true"
+                    className="-ml-2.5 flex size-[34px] items-center justify-center rounded-full border-2 border-background text-[11px] font-medium text-foreground/70 first:ml-0"
                     style={{ backgroundColor: c }}
-                  />
+                  >
+                    {initials}
+                  </span>
                 ))}
               </div>
               <span className="text-[36px] font-semibold tracking-[-0.04em]">5</span>
@@ -491,12 +536,21 @@ export default function MarketingPage() {
             </div>
             <div className="flex items-center gap-3.5">
               <div className="flex">
-                {["#E7DCCB", "#D3E0E4", "#E0D9E8", "#E1E8DA", "#F2ECE1"].map((c, i) => (
+                {[
+                  { c: "#E7DCCB", initials: "JD" },
+                  { c: "#D3E0E4", initials: "AM" },
+                  { c: "#E0D9E8", initials: "RK" },
+                  { c: "#E1E8DA", initials: "SL" },
+                  { c: "#F2ECE1", initials: "TN" },
+                ].map(({ c, initials }, i) => (
                   <span
                     key={i}
-                    className="-ml-2.5 size-[34px] rounded-full border-2 border-foreground first:ml-0"
+                    aria-hidden="true"
+                    className="-ml-2.5 flex size-[34px] items-center justify-center rounded-full border-2 border-foreground text-[11px] font-medium text-foreground/70 first:ml-0"
                     style={{ backgroundColor: c }}
-                  />
+                  >
+                    {initials}
+                  </span>
                 ))}
                 <span className="-ml-2.5 flex size-[34px] items-center justify-center rounded-full border-2 border-foreground bg-brand text-[12px] font-semibold text-foreground">
                   +

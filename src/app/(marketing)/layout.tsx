@@ -9,8 +9,15 @@ import { BrandMark } from "@/components/app/BrandMark";
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <header className="mx-auto grid h-[76px] w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-6 sm:px-10 lg:px-16">
-        <Link href="/" className="flex items-center gap-2.5">
+      {/* flex + justify-between, not CSS grid - a grid-cols-[1fr_auto_1fr]
+          track doesn't collapse to 0 just because its sole item is
+          display:none (confirmed: the hidden middle "auto" track still
+          reserved ~130px on mobile, pushing Log in/Sign up off-center).
+          Flex items are fully removed from layout when hidden, so this
+          collapses correctly below md while staying equivalent to the
+          old grid's centering above it. */}
+      <header className="mx-auto flex h-[76px] w-full max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-16">
+        <Link href="/" className="flex items-center gap-1.5 sm:gap-2.5">
           <BrandMark variant="full" size={26} />
           <span className="text-[20px] font-semibold tracking-[-0.045em]">Crewspace</span>
         </Link>
@@ -28,13 +35,13 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             Pricing
           </a>
         </nav>
-        <div className="flex items-center justify-end gap-1.5">
-          <Link href="/login" className="px-3.5 py-2 text-[14px]">
+        <div className="flex items-center justify-end gap-0.5 sm:gap-1.5">
+          <Link href="/login" className="px-2 py-2 text-[14px] sm:px-3.5">
             Log in
           </Link>
           <Link
             href="/signup"
-            className="flex h-[38px] items-center rounded-[10px] bg-primary px-4 text-[14px] font-medium text-primary-foreground hover:bg-primary-hover"
+            className="flex h-[38px] items-center rounded-[10px] bg-primary px-3 text-[14px] font-medium text-primary-foreground hover:bg-primary-hover sm:px-4"
           >
             Sign up
           </Link>
